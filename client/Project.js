@@ -1,13 +1,12 @@
 import uR from 'unrest.js'
 
-const { db } = uR
-console.log(db)
+const { Manager, Model } = uR.db
 
-export default class Project extends db.Object {
+export default class Project extends Model {
   static app_label = "main"
   static model_name = "Project"
   static fields = {
     name: "",
   }
-  static manager = db.Manager
+  static manager = Manager
 }

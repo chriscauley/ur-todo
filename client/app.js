@@ -2,7 +2,8 @@ import uR from "unrest.js"
 import Task from "./Task"
 import Project from "./Project"
 
-uR.auth.enabled = false
+import "./routes"
+import "./tags"
 
 uR.ready(() => {
   window.Task = Task
