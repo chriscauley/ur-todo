@@ -1,12 +1,22 @@
 import uR from 'unrest.js'
+import { format } from 'date-fns'
 
 <todo-project>
   <div class={theme.outer}>
     <div class={theme.header}>
-      <div class={theme.header_title}>{project.name}</div></div>
+      <div class={theme.header_title}>{project.name}</div>
+    </div>
     <div class={theme.content}>
-      <div each={task,it in tasks}>
-        {task.name}
+      <div each={task,it in tasks} class="tile tile-centered">
+        <div class="tile-icon pointer" onclick={markDone}>
+          <i class={task.getIcon()} />
+        </div>
+        <div class="tile-content">
+          <div class="tile-title">{task.name}</div>
+        </div>
+        <div class="tile-action">
+          <a href={task.edit_link}><i class={uR.icon('ellipsis-v')} /></a>
+        </div>
       </div>
     </div>
   </div>
@@ -24,9 +34,15 @@ this.submit = (tag) => {
     project_id: this.project.id,
     ...tag.getData(),
   }).then((a,b,c) => {
-    console.log(Task.objects.all())
     this.update()
   })
+}
+
+markDone(e) {
+  const task = e.item.task;
+  task.done = !task.done;
+  task.completed = task.done?format(new Date()):undefined
+  Task.objects.save(task);
 }
 </script>
 </todo-project>

@@ -17,6 +17,4 @@ def obj_api(request,app_label,model_name):
         obj = model(user=request.user)
     obj.data = data
     obj.save()
-    return JsonResponse({
-      "results": [ obj.as_json ]
-    })
+    return JsonResponse(obj.as_json)
