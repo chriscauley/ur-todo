@@ -4,12 +4,11 @@ import uR from "unrest.js"
   <div class={theme.outer}>
     <div class={theme.content}>
       <div each={obj in objects} class="tile tile-centered">
-
         <div class="tile-icon {css.bg.primary}">
-          <i class={uR.icon('envelope')} />
+          <a class={uR.icon('list')} href="#/project/{obj.id}/"></a>
         </div>
         <div class="tile-content">
-          <div class="tile-title">{obj.name}</div>
+          <a href="#/project/{obj.id}/" class="tile-title">{obj.name}</a>
           <small class="tile-subtitle text-gray">14MB  Public  1 Jan, 2017</small>
         </div>
         <div class="tile-action">

@@ -10,6 +10,8 @@ export default class Task extends Model {
     done: false,
     name: "",
     project: ForeignKey(Project),
+    id: 0,
   }
   static manager = Manager
+  static editable_fieldnames = [ 'name' ]
 }
