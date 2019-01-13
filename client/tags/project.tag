@@ -2,14 +2,15 @@ import uR from 'unrest.js'
 import { format } from 'date-fns'
 
 <task-tile class="tile tile-centered">
-  <div class="tile-icon pointer" onclick={markDone}>
+  <div class="tile-icon pointer" onclick={complete}>
     <i class={task.getIcon()} />
   </div>
   <div class="tile-content">
     <div class="tile-title">{task.name}</div>
+    <div class="tile-subtitle text-gray">{task.getSubtitle()}</div>
   </div>
   <div class="tile-action" onclick={edit}>
-    <i class={uR.icon('ellipsis-v')} />
+    <i class={uR.icon('pencil pointer')} />
   </div>
 <script>
 this.task = opts.object
@@ -17,10 +18,9 @@ edit() {
   this.task.tag = "ur-form"
   this.parent.update()
 }
-markDone(e) {
+complete(e) {
   const { task } = this
-  task.done = !task.done;
-  task.completed = task.done?format(new Date()):undefined
+  task.completed = task.completed?undefined:format(new Date())
   Task.objects.save(task)
 }
 </script>
@@ -36,7 +36,7 @@ markDone(e) {
     </div>
     <div class={theme.footer}>
       <div if={!add_another} onclick={toggleAdd} class={uR.css.btn.default}>
-        <i class="fa fa-plus" />
+        <i class={uR.icon('plus')} />
         Add Another
       </div>
       <ur-form if={add_another} model={Task} submit={saveNew} />
@@ -49,7 +49,9 @@ const { Project, Task } = uR.db.main
 window.P = this.project = Project.objects.get(this.opts.matches[1])
 this.on("mount", this.update)
 this.on("update",() => {
-  this.tasks = Task.objects.all().filter(t => t.project === this.project.id)
+  this.tasks = Task.objects.filter(
+    t => t.project === this.project.id && t.isFresh()
+  )
 })
 this.submit = (tag) => {
   Task.objects.create({

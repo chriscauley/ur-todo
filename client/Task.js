@@ -1,5 +1,6 @@
 import uR from "unrest.js"
 import Project from './Project'
+import { distanceInWordsToNow as toNow } from 'date-fns'
 
 const { Model, Manager, ForeignKey } = uR.db
 
@@ -7,7 +8,6 @@ export default class Task extends Model {
   static app_label = "main"
   static model_name = "Task"
   static fields = {
-    done: false,
     name: "",
     project: ForeignKey(Project),
     completed: "",
@@ -18,6 +18,15 @@ export default class Task extends Model {
   tag = "task-tile"
   edit_link = `#!/form/main.Task/${this.id}/`
   getIcon() {
-    return uR.icon(this.done?'check-square-o':'square-o')
+    return uR.icon(this.completed?'check-square-o':'square-o')
+  }
+  getSubtitle() {
+    if (this.completed) {
+      return toNow(this.completed) + " ago"
+    }
+    return "incomplete"
+  }
+  isFresh() {
+    return !this.completed || (new Date() - new Date(this.completed)) < 3e5 // 5 minutes
   }
 }
