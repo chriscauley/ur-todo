@@ -10,7 +10,7 @@ import { format } from 'date-fns'
     <div class="tile-subtitle text-gray">{task.getSubtitle()}</div>
   </div>
   <div class="tile-action" onclick={edit}>
-    <i class={uR.icon('pencil pointer')} />
+    <i class={uR.css.icon('pencil pointer')} />
   </div>
 <script>
 this.task = opts.object
@@ -29,14 +29,18 @@ complete(e) {
 <todo-project>
   <div class={theme.outer}>
     <div class={theme.header}>
-      <div class={theme.header_title}>{project.name}</div>
+      <span class={theme.header_title}>{project.name}</span>
+      <div class="float-right">
+        <button onclick={toggleHistory} class={btn.default}>
+          <i class={icon('history')} /></button>
+      </div>
     </div>
     <div class={theme.content}>
       <div data-is={task.tag} object={task} each={task,it in tasks} submit={save} />
     </div>
     <div class={theme.footer}>
-      <div if={!add_another} onclick={toggleAdd} class={uR.css.btn.default}>
-        <i class={uR.icon('plus')} />
+      <div if={!add_another} onclick={toggleAdd} class={btn.default}>
+        <i class={icon('plus')} />
         Add Another
       </div>
       <ur-form if={add_another} model={Task} submit={saveNew} />

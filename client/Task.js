@@ -19,7 +19,7 @@ export default class Task extends Model {
   tag = "task-tile"
   edit_link = `#!/form/main.Task/${this.id}/`
   getIcon() {
-    return uR.icon(this.completed?'check-square-o':'square-o')
+    return uR.css.icon(this.completed?'check-square-o':'square-o')
   }
   getSubtitle() {
     if (this.completed) {
