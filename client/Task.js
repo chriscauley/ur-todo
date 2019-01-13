@@ -8,13 +8,14 @@ export default class Task extends Model {
   static app_label = "main"
   static model_name = "Task"
   static fields = {
-    name: "",
+    name: "monkey",
     project: ForeignKey(Project),
     completed: "",
     id: 0,
+    due: uR.db.DateTime({auto_now: true}),
   }
   static manager = Manager
-  static editable_fieldnames = [ 'name' ]
+  static editable_fieldnames = [ 'name', 'due' ]
   tag = "task-tile"
   edit_link = `#!/form/main.Task/${this.id}/`
   getIcon() {
