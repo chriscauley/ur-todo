@@ -25,6 +25,9 @@ export default class Task extends Model {
     if (this.completed) {
       return toNow(this.completed) + " ago"
     }
+    if (this.due) {
+      return "Due: " + toNow(this.due)
+    }
     return "incomplete"
   }
   isFresh() {
