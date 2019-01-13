@@ -15,6 +15,7 @@ export default class Task extends Model {
   }
   static manager = Manager
   static editable_fieldnames = [ 'name' ]
+  tag = "task-tile"
   edit_link = `#!/form/main.Task/${this.id}/`
   getIcon() {
     return uR.icon(this.done?'check-square-o':'square-o')
