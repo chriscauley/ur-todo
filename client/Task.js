@@ -1,36 +1,69 @@
 import uR from "unrest.js"
 import Project from './Project'
-import { distanceInWordsToNow as toNow } from 'date-fns'
+import { distanceInWordsStrict as dt2words } from 'date-fns'
 
-const { Model, Manager, ForeignKey } = uR.db
+const { Model, Manager, ForeignKey, DateTime } = uR.db
 
 export default class Task extends Model {
   static app_label = "main"
   static model_name = "Task"
   static fields = {
-    name: "monkey",
-    project: ForeignKey(Project),
-    completed: "",
     id: 0,
-    due: uR.db.DateTime({auto_now: true}),
+    name: "",
+    project: ForeignKey(Project),
+    started: DateTime({required: false}),
+    completed: DateTime({required: false}),
+    due: DateTime({auto_now: true}),
+    activity: ForeignKey('main.Activity',{required: false})
   }
   static manager = Manager
   static editable_fieldnames = [ 'name', 'due' ]
   tag = "task-tile"
   edit_link = `#!/form/main.Task/${this.id}/`
+
   getIcon() {
-    return uR.css.icon(this.completed?'check-square-o':'square-o')
-  }
-  getSubtitle() {
+    let icon = "square-o"
     if (this.completed) {
-      return toNow(this.completed) + " ago"
+      icon = "check-square-o"
+    } else if (this.started) {
+      icon = "spinner fa-spin"
     }
-    if (this.due) {
-      return "Due: " + toNow(this.due)
-    }
-    return "incomplete"
+    return uR.css.icon(icon)
   }
+
+  getSubtitles() {
+    const now = new Date()
+    const out = []
+    if (this.completed) {
+      out.push({
+        text: dt2words(this.completed,now) + " ago",
+        icon: "fa fa-calendar",
+      })
+      this.started && out.push({
+        text: dt2words(this.completed,this.started),
+        icon: "fa fa-hourglass",
+      })
+    } else if (this.due) {
+      const is_past = now < this.due
+      out.push(`Due: ${dt2words(this.due,now)} ${is_past?"over due":"from now"}`)
+    } else {
+      out.push('incomplete')
+    }
+    return out.map(uR.element.text2obj)
+  }
+
   isFresh() {
-    return !this.completed || (new Date() - new Date(this.completed)) < 3e5 // 5 minutes
+    // for now, hide everything completed more tha 5 minutes ago
+    return !this.completed || (new Date() - new Date(this.completed)) < 3e5
+  }
+
+  click() {
+    // moves task from stopped to started to complete
+    if (this.started && !this.completed) {
+      this.completed = new Date().valueOf()
+    } else if (!this.started) {
+      this.started = new Date().valueOf()
+    }
+    return this.constructor.objects.save(this)
   }
 }

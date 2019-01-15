@@ -2,12 +2,17 @@ import uR from 'unrest.js'
 import { format } from 'date-fns'
 
 <task-tile class="tile tile-centered">
-  <div class="tile-icon pointer" onclick={complete}>
+  <div class="tile-icon pointer" onclick={click}>
     <i class={task.getIcon()} />
   </div>
   <div class="tile-content">
     <div class="tile-title">{task.name}</div>
-    <div class="tile-subtitle text-gray">{task.getSubtitle()}</div>
+    <div class="tile-subtitle text-gray">
+      <span each={sub,it in task.getSubtitles()}>
+        <i if={sub.icon} class={sub.icon} />
+        {sub.text}
+      </span>
+    </div>
   </div>
   <div class="tile-action" onclick={edit}>
     <i class={uR.css.icon('pencil pointer')} />
@@ -18,10 +23,9 @@ edit() {
   this.task.tag = "ur-form"
   this.parent.update()
 }
-complete(e) {
+click(e) {
   const { task } = this
-  task.completed = task.completed?undefined:format(new Date())
-  Task.objects.save(task)
+  task.click().then(() => this.update())
 }
 </script>
 </task-tile>
