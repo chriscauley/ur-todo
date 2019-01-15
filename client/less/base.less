@@ -1,5 +1,6 @@
 body {
   background: #eee;
+  padding: 1rem 1rem 1.5rem;
 }
 
 a,
@@ -15,6 +16,17 @@ a:hover {
   max-width: 460px;
 }
 
+.tile {
+  border-bottom: .05rem solid #f1f3f5;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  &:last-child {
+    border-bottom: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
 .tile-icon, .tile-action {
   align-items: center;
   cursor: pointer;
@@ -27,6 +39,11 @@ a:hover {
 
 .tile-title {
   display: block;
+}
+
+.tile-subtitle {
+  display: flex;
+  justify-content: space-between;
 }
 
 .navbar {

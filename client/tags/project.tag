@@ -17,6 +17,7 @@ import { format } from 'date-fns'
   <div class="tile-action" onclick={edit}>
     <i class={uR.css.icon('pencil pointer')} />
   </div>
+  <div class="divider"></div>
 <script>
 this.task = opts.object
 edit() {
