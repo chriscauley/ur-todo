@@ -31,7 +31,7 @@ complete(e) {
     <div class={theme.header}>
       <span class={theme.header_title}>{project.name}</span>
       <div class="float-right">
-        <button onclick={toggleHistory} class={btn.default}>
+        <button onclick={toggleHistory} class={btn[show_past?'primary':'link']}>
           <i class={icon('history')} /></button>
       </div>
     </div>
@@ -53,8 +53,11 @@ const { Project, Task } = uR.db.main
 window.P = this.project = Project.objects.get(this.opts.matches[1])
 this.on("mount", this.update)
 this.on("update",() => {
+  const filter = this.show_past?
+        t => !t.isFresh():
+        t => t.isFresh()
   this.tasks = Task.objects.filter(
-    t => t.project === this.project.id && t.isFresh()
+    t => t.project === this.project.id && filter(t)
   )
 })
 this.submit = (tag) => {
@@ -78,6 +81,9 @@ this.saveNew = (tag) => {
 }
 toggleAdd() {
   this.add_another = !this.add_another
+}
+toggleHistory() {
+  this.show_past = !this.show_past
 }
 </script>
 </todo-project>
