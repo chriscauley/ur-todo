@@ -11,5 +11,5 @@ urlpatterns = [
     path('api/nopass/',include('unrest.nopass.urls')),
     path("user.json",unrest.views.user_json),
     path("api/auth/register/",nopass_create),
-    re_path('^api/(main).(Task|Project)/$', main.views.obj_api),
+    re_path('^api/(main).(Task|Project|Activity)/$', main.views.obj_api),
 ]

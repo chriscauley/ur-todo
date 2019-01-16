@@ -44,7 +44,7 @@ export default class Task extends Model {
         icon: "fa fa-hourglass",
       })
     } else if (this.due) {
-      const is_past = now < this.due
+      const is_past = now > this.due
       out.push(`Due: ${dt2words(this.due,now)} ${is_past?"over due":"from now"}`)
     } else {
       out.push('incomplete')
