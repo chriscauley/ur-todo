@@ -1,6 +1,6 @@
 import uR from 'unrest.js'
 
-const { Manager, Model } = uR.db
+const { APIManager, Model } = uR.db
 
 export default class Project extends Model {
   static app_label = "main"
@@ -9,7 +9,7 @@ export default class Project extends Model {
     name: "",
     id: 0,
   }
-  static manager = Manager
+  static manager = APIManager
   static editable_fieldnames = ['name']
   edit_link = `#!/form/main.Project/${this.id}/`
 }

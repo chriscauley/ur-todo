@@ -2,7 +2,7 @@ import uR from "unrest.js"
 import Project from './Project'
 import { distanceInWordsStrict as dt2words } from 'date-fns'
 
-const { Model, Manager, ForeignKey, DateTime } = uR.db
+const { Model, APIManager, ForeignKey, DateTime } = uR.db
 
 export default class Task extends Model {
   static app_label = "main"
@@ -16,7 +16,7 @@ export default class Task extends Model {
     due: DateTime({auto_now: true}),
     activity: ForeignKey('main.Activity',{required: false})
   }
-  static manager = Manager
+  static manager = APIManager
   static editable_fieldnames = [ 'name', 'due' ]
   tag = "task-tile"
   edit_link = `#!/form/main.Task/${this.id}/`
