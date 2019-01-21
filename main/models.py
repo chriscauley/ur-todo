@@ -15,3 +15,5 @@ class Project(UserModel):
 
 class Activity(UserModel):
     json_fields = ['id','data']
+    def __str__(self):
+        return "{} - {}".format(self.data['name'],self.user)
