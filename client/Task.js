@@ -60,10 +60,14 @@ export default class Task extends Model {
   click() {
     // moves task from stopped to started to complete
     if (this.started && !this.completed) {
-      this.completed = new Date().valueOf()
+      this.complete()
     } else if (!this.started) {
       this.started = new Date().valueOf()
     }
     return this.constructor.objects.save(this)
+  }
+
+  complete() {
+    this.completed = new Date().valueOf()
   }
 }
