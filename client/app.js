@@ -1,10 +1,10 @@
-import uR from "unrest.js"
-import Activity from "./Activity"
-import Task from "./Task"
-import Project from "./Project"
+import uR from 'unrest.js'
+import Activity from './Activity'
+import Task from './Task'
+import Project from './Project'
 
-import "./routes"
-import "./tags"
+import './routes'
+import './tags'
 
 uR.ready(() => {
   uR.admin.start()
