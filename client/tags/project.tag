@@ -62,7 +62,7 @@ this.on("update",() => {
         t => !t.isFresh():
         t => t.isFresh()
   this.tasks = Task.objects.filter(
-    t => t.project === this.project.id && filter(t)
+    t => t.project === this.project && filter(t)
   )
 })
 this.submit = (tag) => {
