@@ -46,9 +46,7 @@ uR.db.ready(() => {
       const task = activity.makeNextTask()
       expect(task.activity).to.equal(activity)
       expect(task.name).to.equal(name)
-      expect(!!task.due).to.equal(true)
-      expect(df.getHours(task.due)).to.equal(9)
-      expect(df.getSeconds(task.due)).to.equal(0)
+      expect(df.isEqual(task.due, activity.getNextTime())).to.equal(true)
 
       expect(Task.objects.filter({ activity: activity }).length).to.equal(2)
     })
@@ -80,6 +78,39 @@ uR.db.ready(() => {
       // We've now exceded the per_day, so the next task should be next_day
       expect(df.getDate(tasks[3].due)).to.equal(tomorrows_dom)
     })
+  })
+
+  it('Incomplete previous days tasks count for today if completed today', () => {
+    const activity = newActivity({ per_day: 2 })
+    const today = new Date()
+    const yesterday = df.addDays(today, -1)
+
+    const yesterdays_completed_task = activity.makeNextTask()
+    Object.assign(yesterdays_completed_task, {
+      completed: yesterday,
+      due: yesterday,
+    })
+    const yesterdays_incomplete_task = activity.makeNextTask()
+    yesterdays_incomplete_task.due = yesterday
+    yesterdays_incomplete_task.complete()
+    const todays_second_task = activity.makeNextTask()
+    todays_second_task.complete()
+
+    const tomorrows_task = activity.makeNextTask()
+    const due_days = [
+      yesterdays_completed_task,
+      yesterdays_incomplete_task,
+      todays_second_task,
+      tomorrows_task,
+    ].map(t => df.differenceInCalendarDays(t.due, today))
+
+    expect(due_days).to.deep.equal([-1, -1, 0, 1])
+    const completed_days = [
+      yesterdays_completed_task,
+      yesterdays_incomplete_task,
+      todays_second_task,
+    ].map(t => df.differenceInCalendarDays(t.completed, today))
+    expect(completed_days).to.deep.equal([-1, 0, 0])
   })
 
   it('repeats tasks interval days from now', () => {

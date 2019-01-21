@@ -4,6 +4,8 @@ import _ from 'lodash'
 
 const { Model, Int, APIManager, Time } = uR.db
 
+const daysSince = df.differenceInCalendarDays
+
 export default class Activity extends Model {
   static app_label = 'main'
   static model_name = 'Activity'
@@ -69,14 +71,14 @@ export default class Activity extends Model {
     }
 
     // #! TODO GitHub Issue: #1
-    const now = Math.max(last_task.due, new Date())
+    const now = Math.max(last_task.completed, new Date())
 
     const todays_tasks = tasks.filter(
-      t => !df.differenceInCalendarDays(t.due, now),
+      t => t === last_task || !daysSince(t.completed, now),
     )
     if (this.per_day > todays_tasks.length) {
       // haven't completed this.per_day tasks today. Make the next one today
-      next_due_time = df.addMinutes(last_task.due, this.repeat_delay)
+      next_due_time = df.addMinutes(last_task.completed, this.repeat_delay)
     } else {
       // #! TODO GitHub Issue: #1 (remove now)
       next_due_time = this.getNextTime(now)
