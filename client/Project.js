@@ -12,4 +12,7 @@ export default class Project extends Model {
   static manager = APIManager
   static editable_fieldnames = ['name']
   edit_link = `#!/form/main.Project/${this.id}/`
+  __str__() {
+    return this.name
+  }
 }

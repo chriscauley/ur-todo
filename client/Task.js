@@ -21,6 +21,10 @@ export default class Task extends Model {
   tag = 'task-tile'
   edit_link = `#!/form/main.Task/${this.id}/`
 
+  __str__() {
+    return this.name
+  }
+
   getIcon() {
     let icon = 'square-o'
     if (this.completed) {
