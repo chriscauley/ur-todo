@@ -17,7 +17,7 @@ export default class Activity extends Model {
     interval: Int(1, { choices: [1, 2, 3, 4, 5, 6, 7, 14, 21, 28] }),
     start_time: Time('9:00'),
     repeat_delay: Int(5, { choices: [0, 1, 5, 10, 15, 30, 60, 120] }),
-    project: ForeignKey('main.Project')
+    project: ForeignKey('main.Project'),
   }
   static editable_fieldnames = [
     'name',
@@ -50,7 +50,6 @@ export default class Activity extends Model {
 
   makeNextTask = () => {
     const Task = uR.db.main.Task
-    let next_due_time
     const tasks = Task.objects.filter({ activity: this })
 
     // don't make another task if this one is incomplete
@@ -85,7 +84,6 @@ export default class Activity extends Model {
       kwargs.due = this.getNextTime(now)
     }
 
-    
     return uR.db.main.Task.objects.create(kwargs)
   }
 }

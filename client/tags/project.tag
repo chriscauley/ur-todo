@@ -24,9 +24,15 @@ edit() {
   this.task.tag = "ur-form"
   this.parent.update()
 }
+
 click(e) {
   const { task } = this
-  task.click().then(() => this.update())
+  task.click().then(() => {
+    if (task.activity) {
+      task.activity.makeNextTask()
+    }
+    uR.db.ready.then(() => this.parent.update())
+  })
 }
 </script>
 </task-tile>
