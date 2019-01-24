@@ -1,6 +1,29 @@
 import uR from 'unrest.js'
 import Project from './Project'
-import { distanceInWordsStrict as dt2words } from 'date-fns'
+import { differenceInSeconds } from 'date-fns'
+
+const UNIT_CONVERSION = [
+  [90, 1, 's'],
+  [90, 60, 'm'],
+  [36, 3600, 'h'],
+  [1, 3600 * 24, 'd'],
+]
+
+const shortTimeDiff = seconds => {
+  if (!seconds) {
+    return 'Now!'
+  }
+  const end = seconds > 0 ? 'from now' : 'ago'
+  seconds = Math.abs(seconds)
+
+  let count, unit
+  UNIT_CONVERSION.find(([max, mod, _unit], _i) => {
+    count = seconds / mod
+    unit = _unit
+    return count < max
+  })
+  return `${Math.floor(count)}${unit} ${end}`
+}
 
 const { Model, APIManager, ForeignKey, DateTime } = uR.db
 
@@ -38,20 +61,21 @@ export default class Task extends Model {
     const now = new Date()
     const out = []
     if (this.completed) {
+      this.seconds_to_next = differenceInSeconds(this.completed, now)
       out.push({
-        text: dt2words(this.completed, now) + ' ago',
+        text: 'Done: ' + shortTimeDiff(this.seconds_to_next),
         icon: 'fa fa-calendar',
       })
       this.started &&
         out.push({
-          text: dt2words(this.completed, this.started),
+          text: shortTimeDiff(
+            differenceInSeconds(this.completed, this.started),
+          ).split(' ')[0],
           icon: 'fa fa-hourglass',
         })
     } else if (this.due) {
-      const is_past = now > this.due
-      out.push(
-        `Due: ${dt2words(this.due, now)} ${is_past ? 'over due' : 'from now'}`,
-      )
+      this.seconds_to_next = differenceInSeconds(this.due, now)
+      out.push(`Due: ${shortTimeDiff(this.seconds_to_next)}`)
     } else {
       out.push('incomplete')
     }
