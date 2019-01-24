@@ -34,6 +34,14 @@ click(e) {
     uR.db.ready.then(() => this.parent.update())
   })
 }
+this.on('update',() => {
+  clearTimeout(this.timeout)
+  const time = Math.abs(this.task.seconds_to_next) < 120?1000:60000
+  this.timeout = setTimeout(() => this.update(),time)
+})
+this.on("mount",() => {
+  this.update()
+})
 </script>
 </task-tile>
 
