@@ -4,7 +4,7 @@ import Activity from '../Activity'
 import Task from '../Task'
 import Project from '../Project'
 
-import uR from 'unrest.js'
+import uR from 'unrest.io'
 
 const { mocha } = window
 

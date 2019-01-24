@@ -1,4 +1,4 @@
-import uR from 'unrest.js'
+import uR from 'unrest.io'
 
 <task-tile class="tile tile-centered">
   <div class="tile-icon pointer" onclick={click}>

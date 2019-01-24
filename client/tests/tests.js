@@ -1,6 +1,6 @@
 import './setup'
 import '../app'
-import uR from 'unrest.js'
+import uR from 'unrest.io'
 import df from 'date-fns'
 import _ from 'lodash'
 

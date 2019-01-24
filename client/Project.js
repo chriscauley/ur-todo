@@ -1,4 +1,4 @@
-import uR from 'unrest.js'
+import uR from 'unrest.io'
 
 const { APIManager, Model } = uR.db
 

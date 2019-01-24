@@ -1,6 +1,6 @@
 import df from 'date-fns'
 import _ from 'lodash'
-import uR from 'unrest.js'
+import uR from 'unrest.io'
 import riot from 'riot'
 
 const { Model, Int, APIManager, Time, ForeignKey } = uR.db

@@ -1,4 +1,4 @@
-import uR from 'unrest.js'
+import uR from 'unrest.io'
 
 // #! TODO this should be in uR.admin
 const changeView = uR.auth.loginRequired(uR.router.routeElement('ur-form'))
