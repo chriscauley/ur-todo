@@ -19,6 +19,7 @@ import uR from 'unrest.io'
   <div class="divider"></div>
 <script>
 this.task = opts.object
+console.log(opts)
 edit() {
   this.task.tag = "ur-form"
   this.parent.update()

@@ -10,7 +10,10 @@ import uR from 'unrest.io'
       </div>
     </div>
     <div class={theme.content}>
-      <div data-is={task.tag} object={task} each={task,it in tasks} submit={save} />
+      <div data-is={task.tag} object={task} each={task,it in todo} submit={save} />
+      <div if={done.length} class="divider text-dark text-center"
+           data-content="done"></div>
+      <div data-is={task.tag} object={task} each={task,it in done} submit={save} />
     </div>
     <div class={theme.footer}>
       <div if={!add_another} onclick={toggleAdd} class={btn.default}>
@@ -33,6 +36,8 @@ this.on("update",() => {
   this.tasks = Task.objects.filter(
     t => t.project === this.project && filter(t)
   )
+  this.todo = this.tasks.filter(t => !t.completed)
+  this.done = this.tasks.filter(t => t.completed)
 })
 this.submit = (tag) => {
   Task.objects.create({
