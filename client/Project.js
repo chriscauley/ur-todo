@@ -3,8 +3,7 @@ import uR from 'unrest.js'
 const { APIManager, Model } = uR.db
 
 export default class Project extends Model {
-  static app_label = 'main'
-  static model_name = 'Project'
+  static slug = 'main.Project'
   static fields = {
     name: '',
     id: 0,

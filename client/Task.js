@@ -5,8 +5,7 @@ import { distanceInWordsStrict as dt2words } from 'date-fns'
 const { Model, APIManager, ForeignKey, DateTime } = uR.db
 
 export default class Task extends Model {
-  static app_label = 'main'
-  static model_name = 'Task'
+  static slug = 'main.Task'
   static fields = {
     id: 0,
     name: '',

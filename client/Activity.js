@@ -7,8 +7,7 @@ const { Model, Int, APIManager, Time, ForeignKey } = uR.db
 const daysSince = df.differenceInCalendarDays
 
 export default class Activity extends Model {
-  static app_label = 'main'
-  static model_name = 'Activity'
+  static slug = 'main.Activity'
   static manager = APIManager
   static fields = {
     id: 0,
