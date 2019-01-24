@@ -1,10 +1,11 @@
-import uR from 'unrest.js'
 import df from 'date-fns'
 import _ from 'lodash'
+import uR from 'unrest.js'
+import riot from 'riot'
 
 const { Model, Int, APIManager, Time, ForeignKey } = uR.db
-
 const daysSince = df.differenceInCalendarDays
+
 
 export default class Activity extends Model {
   static slug = 'main.Activity'
@@ -32,7 +33,7 @@ export default class Activity extends Model {
 
   constructor(opts) {
     super(opts)
-    uR.db.ready.then(this.makeNextTask)
+    uR.db.ready.then(this.makeNextTask, () => riot.update())
   }
   getNextTime(now = new Date()) {
     // #! TODO GitHub Issue: #1 (remove now as an argument and just use actual now)
