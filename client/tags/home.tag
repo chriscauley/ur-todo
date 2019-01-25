@@ -9,7 +9,12 @@ import uR from "unrest.io"
         </div>
         <div class="tile-content">
           <a href="#/project/{obj.id}/" class="tile-title">{obj.name}</a>
-          <small class="tile-subtitle text-gray">14MB  Public  1 Jan, 2017</small>
+          <div class="tile-subtitle text-gray">
+            <span each={sub,it in obj.getSubtitles()}>
+              <i if={sub.icon} class={sub.icon} />
+              {sub.text}
+            </span>
+          </div>
         </div>
         <div class="tile-action">
           <a href={obj.edit_link}><i class={icon('ellipsis-v')} /></a>
@@ -26,6 +31,7 @@ this.title = `New ${this.model.model_name}`
 this.on("mount", this.update)
 this.on("update",() => {
   this.objects = this.model.objects.all()
+  this.objects[0].getSubtitles()
 })
 this.submit = (tag) => {
   this.model.objects.create(tag.getData()).then(() => {

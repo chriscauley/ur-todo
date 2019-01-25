@@ -26,6 +26,7 @@ import uR from 'unrest.io'
 
 <script>
 this.mixin(uR.css.ThemeMixin)
+this.done = this.todo = []
 const { Project, Task } = uR.db.main
 window.P = this.project = Project.objects.get(this.opts.matches[1])
 this.on("mount", this.update)
