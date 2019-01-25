@@ -3,9 +3,13 @@ import _ from 'lodash'
 import uR from 'unrest.io'
 import riot from 'riot'
 
-const { Model, Int, APIManager, Time, ForeignKey } = uR.db
+const { Model, Int, String, List, APIManager, Time, ForeignKey } = uR.db
 const daysSince = df.differenceInCalendarDays
 
+const DELAY_CHOICES = _.concat(
+  [0, 1, 5, 10, 15, 30].map(i => [i, `${i} mins`]),
+  [60, 90, 120, 150, 180, 240, 300, 360].map(i => [i, `${i / 60} hrs`]),
+)
 
 export default class Activity extends Model {
   static slug = 'main.Activity'
@@ -14,9 +18,9 @@ export default class Activity extends Model {
     id: 0,
     name: '',
     per_day: Int(1, { choices: _.range(1, 10) }),
-    interval: Int(1, { choices: [1, 2, 3, 4, 5, 6, 7, 14, 21, 28] }),
+    interval: Int(1, { choices: [0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28] }),
     start_time: Time('9:00'),
-    repeat_delay: Int(5, { choices: [0, 1, 5, 10, 15, 30, 60, 120] }),
+    repeat_delay: Int(5, { choices: DELAY_CHOICES }),
     project: ForeignKey('main.Project'),
   }
   static editable_fieldnames = [
