@@ -35,7 +35,7 @@ export default class Task extends Model {
     project: ForeignKey(Project),
     started: DateTime({ required: false }),
     completed: DateTime({ required: false }),
-    due: DateTime({ auto_now: true }),
+    due: DateTime({ auto_now: true, required: false }),
     activity: ForeignKey('main.Activity', { required: false }),
   }
   static manager = APIManager
@@ -99,5 +99,11 @@ export default class Task extends Model {
 
   complete() {
     this.completed = new Date().valueOf()
+  }
+  getFieldnames() {
+    if (this.completed) {
+      return ['name','due','started','completed']
+    }
+    return super.getFieldnames()
   }
 }
