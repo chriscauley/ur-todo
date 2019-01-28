@@ -3,7 +3,7 @@ import _ from 'lodash'
 import uR from 'unrest.io'
 import riot from 'riot'
 
-const { Model, Int, String, List, APIManager, Time, ForeignKey } = uR.db
+const { Model, Int, APIManager, Time, ForeignKey } = uR.db
 const daysSince = df.differenceInCalendarDays
 
 const DELAY_CHOICES = _.concat(

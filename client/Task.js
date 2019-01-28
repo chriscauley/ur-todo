@@ -102,10 +102,10 @@ export default class Task extends Model {
   }
   getFieldnames() {
     if (this.started) {
-      return ['name','due','started']
+      return ['name', 'due', 'started']
     }
     if (this.completed) {
-      return ['name','due','started','completed']
+      return ['name', 'due', 'started', 'completed']
     }
     return super.getFieldnames()
   }
