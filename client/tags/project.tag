@@ -10,17 +10,19 @@ import uR from 'unrest.io'
       </div>
     </div>
     <div class={theme.content}>
-      <div data-is={task.tag} object={task} each={task,it in todo} submit={save} />
+      <div each={task,it in todo} data-is={task.tag} object={task}
+           submit={save} cancel={cancelTask}/>
       <div if={done.length} class="divider text-dark text-center"
            data-content="done"></div>
-      <div data-is={task.tag} object={task} each={task,it in done} submit={save} />
+      <div each={task,it in done} data-is={task.tag} object={task}
+           submit={save} cancel={cancelTask} />
     </div>
     <div class={theme.footer}>
       <div if={!add_another} onclick={toggleAdd} class={btn.default}>
         <i class={icon('plus')} />
         Add Another
       </div>
-      <ur-form if={add_another} model={Task} submit={saveNew} />
+      <ur-form if={add_another} model={Task} submit={saveNew} cancel={cancel} />
     </div>
   </div>
 
@@ -45,6 +47,13 @@ this.submit = (tag) => {
     project_id: this.project.id,
     ...tag.getData(),
   }).then(this.update)
+}
+this.cancelTask = (tag,event) => {
+  event.item.task.tag = "task-tile"
+  this.update()
+}
+this.cancel = (tag) => {
+  tag.unmount()
 }
 this.save = (tag) => {
   const task = tag.opts.object
