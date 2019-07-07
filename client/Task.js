@@ -94,7 +94,7 @@ export default class Task extends Model {
     } else if (!this.started) {
       this.started = new Date().valueOf()
     }
-    return this.constructor.objects.save(this)
+    return this.constructor.objects.create(this)
   }
 
   complete() {
