@@ -33,7 +33,7 @@ this.on("update",() => {
   this.objects = this.model.objects.all()
 })
 this.submit = (tag) => {
-  this.model.objects.create(tag.getData()).then(() => {
+  return this.model.objects.create(tag.getData()).then(() => {
     this.update()
   })
 }

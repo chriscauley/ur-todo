@@ -59,14 +59,14 @@ this.save = (tag) => {
   const task = tag.opts.object
   Object.assign(task,tag.getData())
   task.tag = 'task-tile'
-  Task.objects
+  return Task.objects
     .create(task.serialize())
     .then(() =>riot.update())
 }
 this.saveNew = (tag) => {
   tag.opts.object = new Task({project: this.project.id})
-  this.save(tag)
   this.add_another = false
+  return this.save(tag)
 }
 toggleAdd() {
   this.add_another = !this.add_another
