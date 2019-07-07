@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, re_path, include
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.static import serve
 
 import unrest.views
@@ -17,4 +18,5 @@ urlpatterns = [
 
 if settings.DEBUG:
     kwargs = { 'path': 'index.html', 'document_root': settings.DIST_DIR }
-    urlpatterns.append(path('', serve, kwargs=kwargs))
+    _serve = ensure_csrf_cookie(serve)
+    urlpatterns.append(path('', _serve, kwargs=kwargs))
