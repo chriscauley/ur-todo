@@ -1,4 +1,4 @@
-import './home.tag'
-import './project.tag'
-import './nav.tag'
-import './task.tag'
+import './home'
+import './project'
+import './nav'
+import './task'

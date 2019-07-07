@@ -31,7 +31,6 @@ this.title = `New ${this.model.model_name}`
 this.on("mount", this.update)
 this.on("update",() => {
   this.objects = this.model.objects.all()
-  this.objects[0].getSubtitles()
 })
 this.submit = (tag) => {
   this.model.objects.create(tag.getData()).then(() => {
