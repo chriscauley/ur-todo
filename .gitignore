@@ -1,5 +1,4 @@
 # node stuff
-yarn.lock
 yarn-error.log
 .cache/
 dist
