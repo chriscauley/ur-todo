@@ -101,11 +101,11 @@ export default class Task extends Model {
     this.completed = new Date().valueOf()
   }
   getFieldnames() {
-    if (this.started) {
-      return ['name', 'due', 'started']
-    }
     if (this.completed) {
-      return ['name', 'due', 'started', 'completed']
+      return ['name', 'started', 'completed']
+    }
+    if (this.started) {
+      return ['name', 'started']
     }
     return super.getFieldnames()
   }
