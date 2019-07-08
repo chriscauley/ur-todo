@@ -18,7 +18,7 @@ settings_files = [
 
 for s_file in settings_files:
     try:
-        f = "main/settings/{}.py".format(s_file)
+        f = "server/settings/{}.py".format(s_file)
         with open(os.path.abspath(f)) as file:
             exec(compile(file.read(), f, "exec"), globals(), locals())
     except IOError:

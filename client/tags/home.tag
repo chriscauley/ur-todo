@@ -26,7 +26,7 @@ import uR from "unrest.io"
 
 <script>
 this.mixin(uR.css.ThemeMixin)
-this.model = uR.db.main.Project
+this.model = uR.db.server.Project
 this.title = `New ${this.model.model_name}`
 this.on("mount", this.update)
 this.on("update",() => {

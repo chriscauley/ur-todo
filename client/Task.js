@@ -28,7 +28,7 @@ const shortTimeDiff = seconds => {
 const { Model, APIManager, ForeignKey, DateTime } = uR.db
 
 export default class Task extends Model {
-  static slug = 'main.Task'
+  static slug = 'server.Task'
   static fields = {
     id: 0,
     name: '',
@@ -36,12 +36,12 @@ export default class Task extends Model {
     started: DateTime({ required: false }),
     completed: DateTime({ required: false }),
     due: DateTime({ auto_now: true, required: false }),
-    activity: ForeignKey('main.Activity', { required: false }),
+    activity: ForeignKey('server.Activity', { required: false }),
   }
   static manager = APIManager
   static editable_fieldnames = ['name', 'due']
   tag = 'task-tile'
-  edit_link = `#!/form/main.Task/${this.id}/`
+  edit_link = `#!/form/server.Task/${this.id}/`
 
   __str__() {
     return this.name

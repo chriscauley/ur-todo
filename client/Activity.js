@@ -12,7 +12,7 @@ const DELAY_CHOICES = _.concat(
 )
 
 export default class Activity extends Model {
-  static slug = 'main.Activity'
+  static slug = 'server.Activity'
   static manager = APIManager
   static fields = {
     id: 0,
@@ -21,7 +21,7 @@ export default class Activity extends Model {
     interval: Int(1, { choices: [0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28] }),
     start_time: Time('9:00'),
     repeat_delay: Int(5, { choices: DELAY_CHOICES }),
-    project: ForeignKey('main.Project'),
+    project: ForeignKey('server.Project'),
   }
   static editable_fieldnames = [
     'name',
@@ -53,7 +53,7 @@ export default class Activity extends Model {
   }
 
   makeNextTask = () => {
-    const Task = uR.db.main.Task
+    const Task = uR.db.server.Task
     const tasks = Task.objects.filter({ activity: this })
 
     // don't make another task if this one is incomplete
@@ -71,7 +71,7 @@ export default class Activity extends Model {
     }
     if (!tasks.length) {
       // no last task, make one due now
-      return uR.db.main.Task.objects.create(kwargs)
+      return uR.db.server.Task.objects.create(kwargs)
     }
 
     // #! TODO GitHub Issue: #1
@@ -88,6 +88,6 @@ export default class Activity extends Model {
       kwargs.due = this.getNextTime(now)
     }
 
-    return uR.db.main.Task.objects.create(kwargs)
+    return uR.db.server.Task.objects.create(kwargs)
   }
 }
