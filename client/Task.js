@@ -35,6 +35,7 @@ export default class Task extends Model {
     project: ForeignKey(Project),
     started: DateTime({ required: false }),
     completed: DateTime({ required: false }),
+    deleted: DateTime({ required: false }),
     due: DateTime({ auto_now: true, required: false }),
     activity: ForeignKey('server.Activity', { required: false }),
   }

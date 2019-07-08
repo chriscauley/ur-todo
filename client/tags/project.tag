@@ -5,7 +5,7 @@ import uR from 'unrest.io'
     <div class={theme.header}>
       <span class={theme.header_title}>{project.name}</span>
       <div class="float-right">
-        <button onclick={toggleHistory} class={btn[show_past?'primary':'link']}>
+        <button onclick={toggle('_past')} class={btn[_past?'primary':'link']}>
           <i class={icon('history')} /></button>
       </div>
     </div>
@@ -18,11 +18,11 @@ import uR from 'unrest.io'
            submit={save} cancel={cancelTask} />
     </div>
     <div class={theme.footer}>
-      <div if={!add_another} onclick={toggleAdd} class={btn.default}>
+      <div if={!_add} onclick={toggle('_add')} class={btn.default}>
         <i class={icon('plus')} />
         Add Another
       </div>
-      <ur-form if={add_another} model={Task} submit={saveNew} cancel={cancel} />
+      <ur-form if={_add} model={Task} submit={saveNew} cancel={cancel} />
     </div>
   </div>
 
@@ -33,7 +33,7 @@ const { Project, Task } = uR.db.server
 window.P = this.project = Project.objects.get(this.opts.matches[1])
 this.on("mount", this.update)
 this.on("update",() => {
-  const filter = this.show_past?
+  const filter = this._past?
         t => !t.isFresh():
         t => t.isFresh()
   this.tasks = Task.objects.filter(
@@ -65,14 +65,13 @@ this.save = (tag) => {
 }
 this.saveNew = (tag) => {
   tag.opts.object = new Task({project: this.project.id})
-  this.add_another = false
+  this._add = false
   return this.save(tag)
 }
-toggleAdd() {
-  this.add_another = !this.add_another
-}
-toggleHistory() {
-  this.show_past = !this.show_past
+toggle(mode) {
+  return () => {
+    this[mode] = !this[mode]
+  }
 }
 </script>
 </todo-project>
