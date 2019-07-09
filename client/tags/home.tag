@@ -11,7 +11,7 @@ import uR from "unrest.io"
           <a href="#/project/{obj.id}/" class="tile-title">{obj.name}</a>
           <div class="tile-subtitle text-gray">
             <span each={sub,it in obj.getSubtitles()}>
-              <i if={sub.icon} class={sub.icon} />
+              <i if={sub.icon} class={icon(sub.icon)} />
               {sub.text}
             </span>
           </div>
