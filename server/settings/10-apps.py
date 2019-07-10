@@ -8,4 +8,5 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'server',
     'unrest.nopass',
+    'unrest',
 ]
