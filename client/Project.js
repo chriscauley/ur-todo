@@ -20,14 +20,17 @@ export default class Project extends Model {
     const today = startOfDay(now)
     const tomorrow = endOfDay(today)
     const all_tasks = uR.db.server.Task.objects.filter({ project: this })
-    const tasks = all_tasks.filter(t => !t.completed || isBefore(today, t.due))
+    const tasks = all_tasks
+      .filter(t => !t.completed || isBefore(today, t.due))
       .filter(t => !t.due || isBefore(t.due, tomorrow))
     const running = tasks.filter(t => t.started && !t.completed)
     const completed = tasks.filter(t => t.completed)
-    const out = [{
-      icon: 'check-square-o',
-      text: `${completed.length} / ${tasks.length}`,
-    }]
+    const out = [
+      {
+        icon: 'check-square-o',
+        text: `${completed.length} / ${tasks.length}`,
+      },
+    ]
     if (running.length) {
       out.push({
         icon: 'spinner fa-spin',

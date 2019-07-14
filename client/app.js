@@ -8,7 +8,6 @@ import './tags'
 
 uR.ready(() => {
   uR.admin.start()
-  window.Task = Task
   Activity.__makeMeta()
   Task.__makeMeta()
   Project.__makeMeta()

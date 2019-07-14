@@ -7,6 +7,8 @@ import uR from 'unrest.io'
       <div class="float-right">
         <button onclick={toggle('_past')} class={btn[_past?'primary':'link']}>
           <i class={icon('history')} /></button>
+        <button onclick={toggle('_deleted')} class={btn[_deleted?'cancel':'link']}>
+          <i class={icon('trash')} /></button>
       </div>
     </div>
     <div class={theme.content}>
@@ -18,27 +20,44 @@ import uR from 'unrest.io'
            submit={save} cancel={cancelTask} />
     </div>
     <div class={theme.footer}>
-      <div if={!_add} onclick={toggle('_add')} class={btn.default}>
-        <i class={icon('plus')} />
-        Add Another
+      <div if={!model}>
+        <div onclick={setModel('server.Task')} class={btn.default}>
+          <i class={icon('plus')} />
+          Task
+        </div>
+        <div onclick={setModel('server.Activity')} class={btn.default}>
+          <i class={icon('plus')} />
+          Activity
+        </div>
       </div>
-      <ur-form if={_add} model={Task} submit={saveNew} cancel={cancel} />
+      <ur-form if={model} model={model} submit={saveNew} cancel={cancel} />
     </div>
   </div>
 
 <script>
+this.setModel = model => () => {
+  this.model = model
+}
 this.mixin(uR.css.ThemeMixin)
 this.done = this.todo = []
-const { Project, Task } = uR.db.server
+const { Project, Task, Activity } = uR.db.server
 window.P = this.project = Project.objects.get(this.opts.matches[1])
 this.on("mount", this.update)
+
+getFilteredTasks() {
+  const tasks = Task.objects.filter(t => t.project === this.project)
+  if (this._deleted) {
+    return tasks.filter(t => t.deleted)
+  }
+  return tasks.filter( t=> (
+    !t.deleted && (this._past ? !t.isFresh() : t.isFresh())
+  ))
+}
+
 this.on("update",() => {
-  const filter = this._past?
-        t => !t.isFresh():
-        t => t.isFresh()
-  this.tasks = Task.objects.filter(
-    t => t.project === this.project && filter(t)
-  )
+  this._past = this.mode === "_past"
+  this._deleted = this.mode === "_deleted"
+  this.tasks = this.getFilteredTasks()
   this.todo = this.tasks.filter(t => !t.completed)
   this.done = this.tasks.filter(t => t.completed)
 })
@@ -53,7 +72,8 @@ this.cancelTask = (tag,event) => {
   this.update()
 }
 this.cancel = (tag) => {
-  tag.unmount()
+  delete this.model
+  this.update()
 }
 this.save = (tag) => {
   const task = tag.opts.object
@@ -65,12 +85,16 @@ this.save = (tag) => {
 }
 this.saveNew = (tag) => {
   tag.opts.object = new Task({project: this.project.id})
-  this._add = false
+  delete this.model
   return this.save(tag)
 }
 toggle(mode) {
   return () => {
-    this[mode] = !this[mode]
+    if (this.mode === mode) {
+      delete this.mode
+    } else {
+      this.mode = mode
+    }
   }
 }
 </script>
