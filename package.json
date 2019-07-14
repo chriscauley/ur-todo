@@ -16,6 +16,7 @@
     "url": "github.com/chriscauley/ur-todo.git"
   },
   "dependencies": {
+    "@unrest/element": "^0.0.1",
     "cookie": "^0.3.1",
     "core-js": "2",
     "date-fns": "^1.30.1",

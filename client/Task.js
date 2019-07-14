@@ -1,4 +1,6 @@
 import uR from 'unrest.io'
+import element from '@unrest/element'
+
 import Project from './Project'
 import { differenceInSeconds } from 'date-fns'
 
@@ -80,7 +82,7 @@ export default class Task extends Model {
     } else {
       out.push('incomplete')
     }
-    return out.map(uR.element.text2obj)
+    return out.map(element.text2obj)
   }
 
   isFresh() {

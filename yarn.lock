@@ -917,6 +917,13 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
   integrity sha512-ce5d3q03Ex0sy4R14722Rmt6MT07Ua+k4FwDfdcToYJcMKNtRVQvJ6JCAPdAmAnbRb6CsX6aYb9m96NGod9uTw==
 
+"@unrest/element@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@unrest/element/-/element-0.0.1.tgz#ccbfc496971979f892148ad0945348802d3edbc1"
+  integrity sha512-OswC28FAc/S28QcV/ZwkOUnOnb9q2Mg5seFti92KsLazLLv+AG37iMaNLyRw6D8wXnMgtIoZUY0xobrrObliqA==
+  dependencies:
+    riot "^3.13.2"
+
 abab@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.0.tgz#aba0ab4c5eee2d4c79d3487d85450fb2376ebb0f"
@@ -2808,11 +2815,6 @@ grapheme-breaker@^0.3.2:
     brfs "^1.2.0"
     unicode-trie "^0.3.1"
 
-gyronorm@^2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/gyronorm/-/gyronorm-2.0.6.tgz#c3dbcaa0109087fea75378f78538befdcd53cee2"
-  integrity sha1-w9vKoBCQh/6nU3j3hTi+/c1TzuI=
-
 har-schema@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/har-schema/-/har-schema-2.0.0.tgz#a94c2224ebcac04782a0d9035521f24735b7ec92"
@@ -3930,11 +3932,6 @@ normalize-url@^3.0.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-3.3.0.tgz#b2e1c4dc4f7c6d57743df733a4f5978d18650559"
   integrity sha512-U+JJi7duF1o+u2pynbp2zXDW2/PADgC30f0GsHZtRh+HOcXHnw137TrNlyxxRvWW5fjKd3bcLHPxofWuCjaeZg==
-
-nosleep.js@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/nosleep.js/-/nosleep.js-0.9.0.tgz#0f1371b81dc182e3b6bbdb837e880f16db9d7163"
-  integrity sha512-qLOl2MmuGOPZY7Exi0kYJSCr2e9IcAtOykOo7hXUGAoaMC1Iqj0m+Aj2REuay68mDkhbc5CoA4ccUvcZI175Kw==
 
 npm-bundled@^1.0.1:
   version "1.0.6"
