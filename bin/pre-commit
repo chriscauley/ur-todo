@@ -13,19 +13,18 @@ if [[ ! -z "$PY_FILES" ]]; then
     . .venv/bin/activate
     for FILE in $PY_FILES
     do
-        #! TODO renable this when in @ python3.6
-        # black -q "$FILE" --check
-        flake8 "$FILE"
+        # TODO
+        # yapf "$FILE" -i -d
         if [[ "$?" -ne "0" ]]; then
             PASS=false
         fi
     done
     if ! $PASS; then
-        printf "\\033[41mCOMMIT FAILED:\\033[0m Your commit contains files that did not pass black and flake8. PLease fix the errors and try again.\\n"
+        printf "\\033[41mCOMMIT FAILED:\\033[0m Your commit contains files that did not pass yapf and flake8. PLease fix the errors and try again.\\n"
         exit 1
     else
         a=("$PY_FILES")
-        printf "%s python file(s) linted successfully via black and flake8.\\n" "${#a[@]}"
+        printf "%s python file(s) linted successfully via yapf and flake8.\\n" "${#a[@]}"
         deactivate
     fi
 fi
