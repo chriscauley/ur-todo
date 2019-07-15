@@ -8,7 +8,7 @@
   "source": true,
   "scripts": {
     "lint": "eslint client/",
-    "serve": "parcel client/index.html -p 2323 --public-url /static/",
+    "serve": "parcel client/index.html -p 2323 --public-url /static/ --no-hmr",
     "test": "parcel client/tests/index.html -p 2324"
   },
   "repository": {

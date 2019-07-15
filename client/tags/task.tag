@@ -32,7 +32,7 @@ import { pick } from 'lodash'
         <a onclick={createActivity}>Create Activity</a>
       </li>
       <li class="menu-item" if={task.activity}>
-        <a href="/app/activity/{task.activity.id}/edit/">Edit Activity</a>
+        <a href="/app/server.Activity/{task.activity.id}/edit/">Edit Activity</a>
       </li>
     </ul>
   </div>

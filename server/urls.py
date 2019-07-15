@@ -20,3 +20,5 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns.append(path('', unrest.views.index))
+    urlpatterns.append(path('app/', unrest.views.index))
+    urlpatterns.append(path('app/<path:ignore>/', unrest.views.index))
