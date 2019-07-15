@@ -82,6 +82,9 @@ export default class Task extends Model {
     } else {
       out.push('incomplete')
     }
+    if (this.activity) {
+      out.push(`Activity: ${this.activity.name}`)
+    }
     return out.map(element.text2obj)
   }
 

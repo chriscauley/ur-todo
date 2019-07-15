@@ -28,16 +28,17 @@ import { pick } from 'lodash'
       <li class="menu-item">
         <a onclick={delete}>Delete</a>
       </li>
-      <li class="menu-item">
-        <a onclick={createActivity}>Convert to Activity</a>
+      <li class="menu-item" if={!task.activity}>
+        <a onclick={createActivity}>Create Activity</a>
       </li>
-      <li class="menu-item">
-        <a onclick={editActivity}>Edit Activity</a>
+      <li class="menu-item" if={task.activity}>
+        <a href="/app/activity/{task.activity.id}/edit/">Edit Activity</a>
       </li>
     </ul>
   </div>
   <div class="divider"></div>
 <script>
+const { Task, Activity } = uR.db.server
 this.task = opts.object
 toggle(action) {
   return () => {
@@ -45,7 +46,7 @@ toggle(action) {
   }
 }
 copy() {
-  uR.db.server.Task.objects.create(
+  Task.objects.create(
     pick(this.task, ['name', 'project', 'activity'])
   ).then(() => this.parent.update())
 }
@@ -73,8 +74,8 @@ restore(e) {
   )
 }
 delete(e) {
+  const { task } = e.item
   const accept = () => {
-    const { task } = e.item
     task.deleted = new Date().valueOf()
     task.constructor.objects.create(task).then(
       () => this.parent.update()
@@ -85,6 +86,24 @@ delete(e) {
     { innerHTML: `Are you sure you want to delete "${e.item.task}"`},
     { accept }
   )
+}
+
+createActivity(e) {
+  const { task } = e.item
+  const tasks = Task.objects.all().filter(t => t.name === task.name)
+  Activity.objects.create({
+    name: task.name,
+    project: task.project
+  }).then(
+    activity => Promise.all(
+      tasks.map(t => {
+        t.activity = activity
+        console.log(activity.name)
+        console.log(activity)
+        return Task.objects.create(t)
+      })
+    )
+  ).then(() => this.parent.update())
 }
 
 this.on('update', () => {
