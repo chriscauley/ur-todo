@@ -74,6 +74,8 @@ export default class Activity extends Model {
       return uR.db.server.Task.objects.create(kwargs)
     }
 
+    Object.assign(kwargs, _.pick(last_task, last_task.getExtraFields()))
+
     // #! TODO GitHub Issue: #1
     const now = Math.max(last_task.completed, new Date())
 
