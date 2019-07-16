@@ -16,9 +16,7 @@ import uR from "unrest.io"
             </span>
           </div>
         </div>
-        <div class="tile-action">
-          <a href={obj.edit_link}><i class={icon('ellipsis-v')} /></a>
-        </div>
+        <a class="tile-action" href={obj.edit_link}><i class={icon('ellipsis-v')} /></a>
       </div>
     </div>
   </div>

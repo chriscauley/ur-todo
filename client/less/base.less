@@ -17,6 +17,7 @@ a:hover {
 }
 
 .tile {
+  flex-wrap: wrap;
   border-bottom: .05rem solid #f1f3f5;
   margin-bottom: 0.5rem;
   padding-bottom: 0.5rem;
@@ -24,6 +25,9 @@ a:hover {
     border-bottom: 0;
     margin-bottom: 0;
     padding-bottom: 0;
+  }
+  .flex-full {
+    flex-basis: 100%;
   }
 }
 
@@ -52,19 +56,24 @@ a:hover {
 
 .navbar {
   align-items: center;
-  display: flex;
-  height: 2.5rem;
   padding: 0.5rem;
   .navbar-brand {
-    font-size: 1.5rem;
+    align-items: center;
+    display: flex;
+    font-size: 1.25rem;
     font-weight: bold;
+    justify-content: space-between;
+    width: 100%;
+    .fa-bars {
+      cursor: pointer;
+    }
   }
 }
 
 @import "./unrest.less";
 @import "./spectre.less";
 
-.tile-action {
+.tile-action, .navbar {
   position: relative;
   .menu {
     font-size: 1rem;

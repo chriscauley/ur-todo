@@ -5,29 +5,32 @@ import Project from './Project'
 import { differenceInSeconds } from 'date-fns'
 
 const UNIT_CONVERSION = [
-  [90, 1, 's'],
+  [180, 1, 's'],
   [90, 60, 'm'],
   [36, 3600, 'h'],
   [1, 3600 * 24, 'd'],
 ]
 
 const shortTimeDiff = seconds => {
-  if (!seconds) {
-    return 'Now!'
-  }
-  const end = seconds > 0 ? 'from now' : 'ago'
   seconds = Math.abs(seconds)
-
   let count, unit
   UNIT_CONVERSION.find(([max, mod, _unit], _i) => {
     count = seconds / mod
     unit = _unit
     return count < max
   })
-  return `${Math.floor(count)}${unit} ${end}`
+  return `${Math.floor(count)}${unit}`
 }
 
-const { Model, APIManager, ForeignKey, DateTime } = uR.db
+const relativeTimeDiff = seconds => {
+  const end = seconds > 0 ? 'from now' : 'ago'
+  if (!seconds) {
+    return 'Now!'
+  }
+  return `${shortTimeDiff(seconds)} ${end}`
+}
+
+const { Model, APIManager, ForeignKey, DateTime, Int } = uR.db
 
 export default class Task extends Model {
   static slug = 'server.Task'

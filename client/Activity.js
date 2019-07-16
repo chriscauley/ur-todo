@@ -57,7 +57,7 @@ export default class Activity extends Model {
     const tasks = Task.objects.filter({ activity: this })
 
     // don't make another task if this one is incomplete
-    const incomplete_task = tasks.find(t => !t.completed)
+    const incomplete_task = tasks.find(t => !t.completed && !t.deleted)
     if (incomplete_task) {
       return incomplete_task
     }
