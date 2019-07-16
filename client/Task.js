@@ -43,6 +43,8 @@ export default class Task extends Model {
     deleted: DateTime({ required: false }),
     due: DateTime({ auto_now: true, required: false }),
     activity: ForeignKey('server.Activity', { required: false }),
+    count: Int(0, { required: false }),
+    weight: Int(0, { required: false }),
   }
   static manager = APIManager
   static editable_fieldnames = ['name', 'due']
@@ -69,19 +71,25 @@ export default class Task extends Model {
     if (this.completed) {
       this.seconds_to_next = differenceInSeconds(this.completed, now)
       out.push({
-        text: 'Done: ' + shortTimeDiff(this.seconds_to_next),
+        text: 'Done: ' + relativeTimeDiff(this.seconds_to_next),
         icon: 'fa fa-calendar',
       })
       this.started &&
         out.push({
           text: shortTimeDiff(
             differenceInSeconds(this.completed, this.started),
-          ).split(' ')[0],
+          ),
           icon: 'fa fa-hourglass',
         })
+    } else if (this.started) {
+      this.seconds_to_next = differenceInSeconds(this.started, now)
+      out.push({
+        text: shortTimeDiff(this.seconds_to_next),
+        icon: 'fa fa-hourglass',
+      })
     } else if (this.due) {
       this.seconds_to_next = differenceInSeconds(this.due, now)
-      out.push(`Due: ${shortTimeDiff(this.seconds_to_next)}`)
+      out.push(`Due: ${relativeTimeDiff(this.seconds_to_next)}`)
     } else {
       out.push('incomplete')
     }
@@ -111,11 +119,20 @@ export default class Task extends Model {
   }
   getFieldnames() {
     if (this.completed) {
-      return ['name', 'started', 'completed']
+      return ['name', 'started', 'completed', ...this.getExtraFields()]
     }
     if (this.started) {
-      return ['name', 'started']
+      return ['name', 'started', ...this.getExtraFields()]
     }
     return super.getFieldnames()
+  }
+  getExtraFields() {
+    return ['count', 'weight']
+  }
+  getRunningFields() {
+    if (!this.started || this.completed) {
+      return
+    }
+    return this.getExtraFields()
   }
 }

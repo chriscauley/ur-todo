@@ -36,7 +36,9 @@ import { pick } from 'lodash'
       </li>
     </ul>
   </div>
-  <div class="divider"></div>
+  <div if={task.getRunningFields()} class="flex-full">
+    <ur-form object={task} editable_fieldnames={task.getRunningFields()} submit={saveRunning} autosubmit={true}></ur-form>
+  </div>
 <script>
 const { Task, Activity } = uR.db.server
 this.task = opts.object
@@ -47,7 +49,7 @@ toggle(action) {
 }
 copy() {
   Task.objects.create(
-    pick(this.task, ['name', 'project', 'activity'])
+    pick(this.task, ['name', 'project', 'activity', ...this.task.getExtraFields()])
   ).then(() => this.parent.update())
 }
 edit() {
@@ -104,6 +106,11 @@ createActivity(e) {
       })
     )
   ).then(() => this.parent.update())
+}
+saveRunning(form) {
+  const data = form.getData()
+  Object.assign(this.task, data)
+  return this.task.constructor.objects.create(this.task)
 }
 
 this.on('update', () => {
