@@ -67,7 +67,7 @@ this.submit = (tag) => {
     ...tag.getData(),
   }).then(this.update)
 }
-this.cancelTask = (tag,event) => {
+this.cancelTask = (event) => {
   event.item.task.tag = "task-tile"
   this.update()
 }

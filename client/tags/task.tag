@@ -1,40 +1,42 @@
 import uR from 'unrest.io'
 import { pick } from 'lodash'
 
-<task-tile class="tile tile-centered">
-  <div class="tile-icon {pointer: !task.deleted, disabled: task.deleted}" onclick={click}>
-    <i class={task.getIcon()} />
-  </div>
-  <div class="tile-content">
-    <div class="tile-title">{task.name}</div>
-    <div class="tile-subtitle text-gray">
-      <span each={sub,it in task.getSubtitles()}>
-        <i if={sub.icon} class={sub.icon} />
-        {sub.text}
-      </span>
+<task-tile>
+  <div class="tile tile-centered">
+    <div class="tile-icon {pointer: !task.deleted, disabled: task.deleted}" onclick={click}>
+      <i class={task.getIcon()} />
     </div>
-  </div>
-  <div if={task.deleted} class="tile-action" onclick={restore}>
-    <i class={uR.css.icon('recycle pointer')} />
-  </div>
-  <div if={!task.deleted} class="tile-action" onclick={toggle('_actions')}>
-    <i class={uR.css.icon('ellipsis-v pointer')} />
-    <ul class="menu {'d-none': !_actions}">
-      <li class="menu-item">
-        <a onclick={copy}>Copy</a>
-      <li class="menu-item">
-        <a onclick={edit}>Edit</a>
-      </li>
-      <li class="menu-item">
-        <a onclick={delete}>Delete</a>
-      </li>
-      <li class="menu-item" if={!task.activity}>
-        <a onclick={createActivity}>Create Activity</a>
-      </li>
-      <li class="menu-item" if={task.activity}>
-        <a href="/app/server.Activity/{task.activity.id}/edit/">Edit Activity</a>
-      </li>
-    </ul>
+    <div class="tile-content">
+      <div class="tile-title">{task.name}</div>
+      <div class="tile-subtitle text-gray">
+        <span each={sub,it in task.getSubtitles()}>
+          <i if={sub.icon} class={sub.icon} />
+          {sub.text}
+        </span>
+      </div>
+    </div>
+    <div if={task.deleted} class="tile-action" onclick={restore}>
+      <i class={uR.css.icon('recycle pointer')} />
+    </div>
+    <div if={!task.deleted} class="tile-action" onclick={toggle('_actions')}>
+      <i class={uR.css.icon('ellipsis-v pointer')} />
+      <ul class="menu {'d-none': !_actions}">
+        <li class="menu-item">
+          <a onclick={copy}>Copy</a>
+        <li class="menu-item">
+          <a onclick={edit}>Edit</a>
+        </li>
+        <li class="menu-item">
+          <a onclick={delete}>Delete</a>
+        </li>
+        <li class="menu-item" if={!task.activity}>
+          <a onclick={createActivity}>Create Activity</a>
+        </li>
+        <li class="menu-item" if={task.activity}>
+          <a href="/app/server.Activity/{task.activity.id}/edit/">Edit Activity</a>
+        </li>
+      </ul>
+    </div>
   </div>
   <div if={task.getRunningFields()} class="flex-full">
     <ur-form object={task} editable_fieldnames={task.getRunningFields()} submit={saveRunning} autosubmit={true}></ur-form>
