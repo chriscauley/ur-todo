@@ -8,7 +8,7 @@ import uR from "unrest.io"
     </div>
     <ul class="menu {'d-none': !open}">
       <li class="menu-item">
-        <a href="">Copy</a>
+        <a href={uR.auth.urls.logout}>Logout</a>
       </li>
     </ul>
   </header>

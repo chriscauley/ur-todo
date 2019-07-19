@@ -12,3 +12,5 @@ uR.router.add({
 uR.router.default_route = uR.auth.loginRequired(
   uR.router.routeElement('todo-home'),
 )
+
+uR.router.default_url = '/'
