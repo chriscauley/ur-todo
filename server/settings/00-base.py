@@ -84,3 +84,19 @@ USE_TZ = True
 STATIC_URL = "/static/"
 DIST_DIR = os.path.join(BASE_DIR, "../dist")
 STATICFILES_DIRS = [DIST_DIR]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'null': {
+            'class': 'logging.NullHandler',
+        },
+    },
+    'loggers': {
+        'django.security.DisallowedHost': {
+            'handlers': ['null'],
+            'propagate': False,
+        },
+    },
+}
