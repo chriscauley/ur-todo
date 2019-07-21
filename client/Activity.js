@@ -1,9 +1,9 @@
 import df from 'date-fns'
 import _ from 'lodash'
 import uR from 'unrest.io'
-import riot from 'riot'
+//import riot from 'riot'
 
-const { Model, Int, APIManager, Time, ForeignKey } = uR.db
+const { Model, Int, APIManager, Time, ForeignKey, List } = uR.db
 const daysSince = df.differenceInCalendarDays
 
 const DELAY_CHOICES = _.concat(
@@ -22,6 +22,7 @@ export default class Activity extends Model {
     start_time: Time('9:00'),
     repeat_delay: Int(5, { choices: DELAY_CHOICES }),
     project: ForeignKey('server.Project'),
+    measurements: List('', { choices: ['count', 'weight'] }),
   }
   static editable_fieldnames = [
     'name',
@@ -30,6 +31,7 @@ export default class Activity extends Model {
     'start_time',
     'repeat_delay',
     'project',
+    'measurements',
   ]
   __str__() {
     return this.name
@@ -37,7 +39,7 @@ export default class Activity extends Model {
 
   constructor(opts) {
     super(opts)
-    uR.db.ready.then(this.makeNextTask, () => riot.update())
+    // uR.db.ready.then(this.makeNextTask, () => riot.update())
   }
   getNextTime(now = new Date()) {
     // #! TODO GitHub Issue: #1 (remove now as an argument and just use actual now)

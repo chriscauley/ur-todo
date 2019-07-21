@@ -127,7 +127,10 @@ export default class Task extends Model {
     return super.getFieldnames()
   }
   getExtraFields() {
-    return ['count', 'weight']
+    if (this.activity) {
+      return this.activity.measurements
+    }
+    return []
   }
   getRunningFields() {
     if (!this.started || this.completed) {

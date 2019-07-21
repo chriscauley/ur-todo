@@ -3,7 +3,7 @@ import uR from "unrest.io"
 <todo-nav>
   <header class="navbar">
     <div class="navbar-brand text-primary">
-      <a href="#">uR.TODO</a>
+      <a href="/">uR.TODO</a>
       <a class="float-right fa fa-bars" onclick={toggle('open')} />
     </div>
     <ul class="menu {'d-none': !open}">

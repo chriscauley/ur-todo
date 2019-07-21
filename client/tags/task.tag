@@ -38,8 +38,8 @@ import { pick } from 'lodash'
       </ul>
     </div>
   </div>
-  <div if={task.getRunningFields()} class="flex-full">
-    <ur-form object={task} editable_fieldnames={task.getRunningFields()} submit={saveRunning} autosubmit={true}></ur-form>
+  <div if={fields && fields.length} class="flex-full">
+    <ur-form object={task} editable_fieldnames={fields} submit={saveRunning} autosubmit={true}></ur-form>
   </div>
 <script>
 const { Task, Activity } = uR.db.server
@@ -117,6 +117,7 @@ saveRunning(form) {
 
 this.on('update', () => {
   this.trash_mode = this.opts.trash_mode
+  this.fields = this.task.getRunningFields()
   clearTimeout(this.timeout)
   const time = Math.abs(this.task.seconds_to_next) < 120?1000:60000
   this.timeout = setTimeout(() => this.update(),time)
