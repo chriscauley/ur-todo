@@ -29,6 +29,9 @@ import { pick } from 'lodash'
         <li class="menu-item">
           <a onclick={delete}>Delete</a>
         </li>
+        <li class="menu-item" if={task.due}>
+          <a onclick={removeDue}>Remove Due</a>
+        </li>
         <li class="menu-item" if={!task.activity}>
           <a onclick={createActivity}>Create Activity</a>
         </li>
@@ -89,6 +92,14 @@ delete(e) {
     'tw-confirm',
     { innerHTML: `Are you sure you want to delete "${e.item.task}"`},
     { accept }
+  )
+}
+
+removeDue(e) {
+  const { task } = e.item
+  task.due = ''
+  task.constructor.objects.create(task).then(
+    () => this.parent.update()
   )
 }
 
