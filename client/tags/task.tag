@@ -21,9 +21,9 @@ import { pick } from 'lodash'
     <div if={task.deleted} class="tile-action" onclick={restore}>
       <i class={uR.css.icon('recycle pointer')} />
     </div>
-    <div if={!task.deleted} class="tile-action" onclick={toggle('_actions')}>
+    <div if={!task.deleted} class="tile-action" onclick={toggleActions}>
       <i class={uR.css.icon('ellipsis-v pointer')} />
-      <ul class="menu {'d-none': !_actions}">
+      <ul class="menu {'d-none': parent.openTask !== task}">
         <li class="menu-item">
           <a onclick={copy}>Copy</a>
         <li class="menu-item">
@@ -50,10 +50,20 @@ import { pick } from 'lodash'
 <script>
 const { Task, Activity } = uR.db.server
 this.task = opts.object
-toggle(action) {
-  return () => {
-    this[action] = !this[action]
+this.closeMenu = () => {
+  delete this.parent.openTask
+  window.removeEventListener('click', this.closeMenu)
+  this.parent.update()
+}
+toggleActions(e) {
+  if (this.parent.openTask === this.task) {
+    this.closeMenu()
+  } else {
+    window.addEventListener('click', this.closeMenu)
+    this.parent.openTask = this.task
   }
+  this.parent.update()
+  e.stopPropagation()
 }
 copy() {
   Task.objects.create(
