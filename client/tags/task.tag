@@ -7,9 +7,12 @@ import { pick } from 'lodash'
       <i class={task.getIcon()} />
     </div>
     <div class="tile-content">
-      <div class="tile-title">{task.name}</div>
+      <div class="tile-title">
+        <span if={task.activity} class="chip">A</span>
+        {task.name}
+      </div>
       <div class="tile-subtitle text-gray">
-        <span each={sub,it in task.getSubtitles()}>
+        <span each={sub,it in task.getSubtitles()} class={sub.className}>
           <i if={sub.icon} class={sub.icon} />
           {sub.text}
         </span>

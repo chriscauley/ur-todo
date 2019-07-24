@@ -23,11 +23,11 @@ const shortTimeDiff = seconds => {
 }
 
 const relativeTimeDiff = seconds => {
-  const end = seconds > 0 ? 'from now' : 'ago'
   if (!seconds) {
     return 'Now!'
   }
-  return `${shortTimeDiff(seconds)} ${end}`
+  const sd = shortTimeDiff(seconds)
+  return seconds > 0 ? `in ${sd}` : `${sd} ago`
 }
 
 const { Model, APIManager, ForeignKey, DateTime, Int } = uR.db
@@ -92,9 +92,6 @@ export default class Task extends Model {
       out.push(`Due: ${relativeTimeDiff(this.seconds_to_next)}`)
     } else {
       out.push('incomplete')
-    }
-    if (this.activity) {
-      out.push(`Activity: ${this.activity.name}`)
     }
     return out.map(element.text2obj)
   }
