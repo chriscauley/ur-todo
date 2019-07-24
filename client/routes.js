@@ -5,7 +5,7 @@ const changeView = uR.auth.loginRequired(uR.router.routeElement('ur-form'))
 
 uR.router.add({
   '#!/form/([^/]*)/(\\d+)/': changeView,
-  '#/project/(\\d+)/': uR.router.routeElement('todo-project'),
+  '#/project/(overdue|\\d+)/': uR.router.routeElement('todo-project'),
   '/app/([\\.\\w]+)/(\\d+)/edit/$': uR.router.routeElement('ur-form'),
 })
 

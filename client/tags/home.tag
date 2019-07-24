@@ -16,7 +16,6 @@ import uR from "unrest.io"
             </span>
           </div>
         </div>
-        <a class="tile-action" href={obj.edit_link}><i class={icon('ellipsis-v')} /></a>
       </div>
     </div>
   </div>
@@ -29,6 +28,7 @@ this.title = `New ${this.model.model_name}`
 this.on("mount", this.update)
 this.on("update",() => {
   this.objects = this.model.objects.all()
+  this.objects.unshift(this.model.OverDue)
 })
 this.submit = (tag) => {
   return this.model.objects.create(tag.getData()).then(() => {

@@ -1,5 +1,5 @@
 import uR from 'unrest.io'
-import { startOfDay, endOfDay, isBefore } from 'date-fns'
+import { startOfDay, endOfDay, isBefore, isPast } from 'date-fns'
 
 const { APIManager, Model } = uR.db
 
@@ -11,6 +11,22 @@ export default class Project extends Model {
   }
   static manager = APIManager
   static editable_fieldnames = ['name']
+  static OverDue = {
+    id: 'overdue',
+    name: 'Overdue',
+    getTasks() {
+      return uR.db.server.Task.objects.filter(
+        t => !t.completed && t.due && isPast(t.due),
+      )
+    },
+    getSubtitles() {
+      return [
+        {
+          text: this.getTasks().length + ' tasks',
+        },
+      ]
+    },
+  }
   edit_link = `#!/form/server.Project/${this.id}/`
   __str__() {
     return this.name

@@ -5,7 +5,7 @@ import { sortBy } from 'lodash'
   <div class={theme.outer}>
     <div class={theme.header}>
       <a href={project.edit_link} class={theme.header_title}>{project.name}</a>
-      <div class="float-right">
+      <div class="float-right" if={project.id}>
         <button onclick={toggle('_past')} class={btn[_past?'primary':'link']}>
           <i class={icon('history')} /></button>
         <button onclick={toggle('_deleted')} class={btn[_deleted?'cancel':'link']}>
@@ -42,11 +42,19 @@ this.setModel = model => () => {
 this.mixin(uR.css.ThemeMixin)
 this.done = this.todo = []
 const { Project, Task, Activity } = uR.db.server
-window.P = this.project = Project.objects.get(this.opts.matches[1])
+if (this.opts.matches[1] === 'overdue') {
+  this.OVERDUE = true
+  window.P = this.project = Project.OverDue
+} else {
+  window.P = this.project = Project.objects.get(this.opts.matches[1])
+}
 this.on("mount", this.update)
 
 getFilteredTasks() {
   let tasks = Task.objects.filter(t => t.project === this.project)
+  if (this.OVERDUE) {
+    tasks = this.project.getTasks()
+  }
   if (this._deleted) {
     return tasks.filter(t => t.deleted)
   }
