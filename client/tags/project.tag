@@ -1,9 +1,10 @@
 import uR from 'unrest.io'
+import { sortBy } from 'lodash'
 
 <todo-project>
   <div class={theme.outer}>
     <div class={theme.header}>
-      <span class={theme.header_title}>{project.name}</span>
+      <a href={project.edit_link} class={theme.header_title}>{project.name}</a>
       <div class="float-right">
         <button onclick={toggle('_past')} class={btn[_past?'primary':'link']}>
           <i class={icon('history')} /></button>
@@ -45,13 +46,19 @@ window.P = this.project = Project.objects.get(this.opts.matches[1])
 this.on("mount", this.update)
 
 getFilteredTasks() {
-  const tasks = Task.objects.filter(t => t.project === this.project)
+  let tasks = Task.objects.filter(t => t.project === this.project)
   if (this._deleted) {
     return tasks.filter(t => t.deleted)
   }
-  return tasks.filter( t=> (
-    !t.deleted && (this._past ? !t.isFresh() : t.isFresh())
-  ))
+  tasks = tasks.filter(t => !t.deleted)
+  if (this._past) {
+    return sortBy(
+        tasks.filter( t=> !t.isFresh()),
+      'completed'
+    ).reverse()
+  } else {
+    return tasks.filter(t => t.isFresh())
+  }
 }
 
 this.on("update",() => {
