@@ -6,7 +6,6 @@ export default class LapCounter extends Input {
   constructor(opts) {
     opts.tagName = 'lap-counter'
     super(opts)
-    console.log(1)
   }
 }
 

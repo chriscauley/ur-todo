@@ -19,7 +19,7 @@ export default class Activity extends Model {
     name: '',
     per_day: Int(1, { choices: _.range(1, 10) }),
     interval: Int(1, { choices: [0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28] }),
-    start_time: Time('9:00'),
+    start_time: Time('09:00'),
     repeat_delay: Int(5, { choices: DELAY_CHOICES }),
     project: ForeignKey('server.Project'),
     measurements: List('', { choices: ['count', 'weight'] }),

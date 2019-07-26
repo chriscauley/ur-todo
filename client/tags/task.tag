@@ -126,8 +126,6 @@ createActivity(e) {
     activity => Promise.all(
       tasks.map(t => {
         t.activity = activity
-        console.log(activity.name)
-        console.log(activity)
         return Task.objects.create(t)
       })
     )

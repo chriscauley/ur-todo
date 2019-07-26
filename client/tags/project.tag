@@ -51,22 +51,10 @@ if (this.opts.matches[1] === 'overdue') {
 this.on("mount", this.update)
 
 getFilteredTasks() {
-  let tasks = Task.objects.filter(t => t.project === this.project)
-  if (this.OVERDUE) {
-    tasks = this.project.getTasks()
-  }
-  if (this._deleted) {
-    return tasks.filter(t => t.deleted)
-  }
-  tasks = tasks.filter(t => !t.deleted)
-  if (this._past) {
-    return sortBy(
-        tasks.filter( t=> !t.isFresh()),
-      'completed'
-    ).reverse()
-  } else {
-    return tasks.filter(t => t.isFresh())
-  }
+  return this.project.getTasks({
+    deleted: this._deleted,
+    past: this._past,
+  })
 }
 
 this.on("update",() => {

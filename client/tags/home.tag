@@ -9,8 +9,8 @@ import uR from "unrest.io"
         </div>
         <div class="tile-content">
           <a href="#/project/{obj.id}/" class="tile-title">{obj.name}</a>
-          <div class="tile-subtitle text-gray">
-            <span each={sub,it in obj.getSubtitles()}>
+          <div class="tile-subtitle justify-left">
+            <span each={sub,it in obj.getSubtitles()} class={sub.className}>
               <i if={sub.icon} class={icon(sub.icon)} />
               {sub.text}
             </span>
