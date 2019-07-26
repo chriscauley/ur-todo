@@ -59,20 +59,24 @@ export default class Project extends Model {
         icon: 'check-square-o mr-2',
         className: 'chip bg-success',
         text: completed_today.length,
+        title: 'Completed Today',
       },
       {
         icon: 'calendar mr-2',
         className: 'chip',
         text: incomplete.length,
+        title: 'Later Today',
       },
       {
         icon: 'hourglass mr-2',
         className: 'chip bg-error',
         text: overdue.length,
+        title: 'Overdue',
       },
       {
         icon: 'spinner fa-spin mr-2',
         text: running.length,
+        title: 'Running',
       },
     ]
     return out.filter(sub => sub.text)
