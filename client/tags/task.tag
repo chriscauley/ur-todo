@@ -23,26 +23,26 @@ import { pick } from 'lodash'
     </div>
     <div if={!task.deleted} class="tile-action" onclick={toggleActions}>
       <i class={uR.css.icon('ellipsis-v pointer')} />
-      <ul class="menu {'d-none': parent.openTask !== task}">
-        <li class="menu-item">
-          <a onclick={copy}>Copy</a>
-        <li class="menu-item">
-          <a onclick={edit}>Edit</a>
-        </li>
-        <li class="menu-item">
-          <a onclick={delete}>Delete</a>
-        </li>
-        <li class="menu-item" if={task.due}>
-          <a onclick={removeDue}>Remove Due</a>
-        </li>
-        <li class="menu-item" if={!task.activity}>
-          <a onclick={createActivity}>Create Activity</a>
-        </li>
-        <li class="menu-item" if={task.activity}>
-          <a href="/app/server.Activity/{task.activity.id}/edit/">Edit Activity</a>
-        </li>
-      </ul>
     </div>
+    <ul class="menu {'d-none': parent.openTask !== task}">
+      <li class="menu-item">
+        <a onclick={copy}>Copy</a>
+      <li class="menu-item">
+        <a onclick={edit}>Edit</a>
+      </li>
+      <li class="menu-item">
+        <a onclick={delete}>Delete</a>
+      </li>
+      <li class="menu-item" if={task.due}>
+        <a onclick={removeDue}>Remove Due</a>
+      </li>
+      <li class="menu-item" if={!task.activity}>
+        <a onclick={createActivity}>Create Activity</a>
+      </li>
+      <li class="menu-item" if={task.activity}>
+        <a href="/app/server.Activity/{task.activity.id}/edit/">Edit Activity</a>
+      </li>
+    </ul>
   </div>
   <div if={fields && fields.length} class="flex-full">
     <ur-form object={task} editable_fieldnames={fields} submit={saveRunning} autosubmit={true}></ur-form>
