@@ -153,7 +153,7 @@ this.on("mount",() => {
 <tw-confirm>
   <div class={theme.outer}>
     <div class={theme.header}>
-      <div class={theme.header_content}>{title}</div>
+      <div class={theme.header_title}>{title}</div>
     </div>
     <div class={theme.content}>
       <yield />
