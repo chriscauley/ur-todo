@@ -6,7 +6,12 @@ DEBUG = True
 SITE_ID = 1
 SECRET_KEY = "n9)&^*bb+ey^)5kd(uc0@*z4=*=$agdq%c^_22xs+d@3hhgd7b"
 
-ALLOWED_HOSTS = ["todo.imisspaint.com"]
+ALLOWED_HOSTS = [
+  "todo.imisspaint.com",
+  "ih.imisspaint.com",
+  "mac.imisspaint.com",
+  "phone.imisspaint.com",
+]
 
 MIDDLEWARE = [
   "django.middleware.security.SecurityMiddleware",
@@ -83,20 +88,20 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 DIST_DIR = os.path.join(BASE_DIR, "../dist")
-STATICFILES_DIRS = [DIST_DIR]
+STATICFILES_DIRS = [DIST_DIR, os.path.join(BASE_DIR, "static")]
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'null': {
-            'class': 'logging.NullHandler',
-        },
-    },
-    'loggers': {
-        'django.security.DisallowedHost': {
-            'handlers': ['null'],
-            'propagate': False,
-        },
-    },
+  "version": 1,
+  "disable_existing_loggers": False,
+  "handlers": {
+    "null": {
+      "class": "logging.NullHandler"
+    }
+  },
+  "loggers": {
+    "django.security.DisallowedHost": {
+      "handlers": ["null"],
+      "propagate": False
+    }
+  },
 }
