@@ -10,5 +10,9 @@ const { mocha } = window
 
 mocha.setup('bdd')
 const models = [Activity, Task, Project]
-models.forEach(model => (model.manager = uR.db.BaseManager))
+uR.FAKE_IDS = true
+models.forEach(model => {
+  delete model.manager
+  new uR.db.BaseManager(model)
+})
 uR.auth.enabled = false

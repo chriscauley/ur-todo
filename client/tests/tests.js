@@ -17,86 +17,105 @@ const newActivity = opts =>
     interval: 1,
     per_day: 1,
     repeat_delay: 1,
+    id: Math.floor(Math.random() * 1e6),
     ...opts,
   })
 
 // most of this should be in the unrest tests
 uR.db.ready(() => {
   describe('Activity', () => {
-    it('.getNextTime() returns 9 am tomorrow', () => {
-      const activity = newActivity()
-      const next_time = activity.getNextTime()
-      expect([
-        df.getHours(next_time),
-        df.getMinutes(next_time),
-        df.getSeconds(next_time),
-        df.getMilliseconds(next_time),
-      ]).to.deep.equal([9, 0, 0, 0])
+    it('.getNextTime() returns 9 am tomorrow', done => {
+      newActivity().then(activity => {
+        const next_time = activity.getNextTime()
+        expect([
+          df.getHours(next_time),
+          df.getMinutes(next_time),
+          df.getSeconds(next_time),
+          df.getMilliseconds(next_time),
+        ]).to.deep.equal([9, 0, 0, 0])
+        done()
+      })
     })
 
-    it('creates an activity with defaults', () => {
+    it('creates an activity with defaults', done => {
       const name = 'foo'
-      const activity = newActivity({ name })
-      expect(activity.name).to.equal(name)
+      newActivity({ name }).then(activity => {
+        expect(activity.name).to.equal(name)
 
-      // first task made is due immediaetly, so skip it
-      activity.makeNextTask().complete()
+        // first task made is due immediaetly, so skip it
+        activity.makeNextTask().then(_task => {
+          _task.complete()
 
-      // create a task and verify all props were set by activity
-      const task = activity.makeNextTask()
-      expect(task.activity).to.equal(activity)
-      expect(task.name).to.equal(name)
-      expect(df.isEqual(task.due, activity.getNextTime())).to.equal(true)
+          // create a task and verify all props were set by activity
+          activity.makeNextTask().then(task => {
+            expect(task.activity).to.equal(activity)
+            expect(task.name).to.equal(name)
+            expect(df.isEqual(task.due, activity.getNextTime())).to.equal(true)
 
-      expect(Task.objects.filter({ activity: activity }).length).to.equal(2)
+            expect(Task.objects.filter({ activity: activity }).length).to.equal(
+              2,
+            )
+            done()
+          })
+        })
+      })
     })
   })
 
   describe('.fields.per_day', () => {
-    it('repeats tasks multiple times in a day', () => {
+    it('repeats tasks multiple times in a day', done => {
       // create an Activity with 5x per day
       // complete task 5 times and check to make sure the 6th happens on the next day
-      const activity = newActivity({ per_day: 3 })
-      const today = new Date()
-      const tomorrow = df.addDays(new Date(), 1)
-      const tasks = _.range(4).map(_i => {
-        const task = activity.makeNextTask()
-        task.complete()
-        return task
+      newActivity({ per_day: 3 }).then(activity => {
+        const today = new Date()
+        const tomorrow = df.addDays(new Date(), 1)
+        const completeAndNextTask = task => {
+          task.complete()
+          return activity.makeNextTask()
+        }
+        activity
+          .makeNextTask()
+          .then(completeAndNextTask)
+          .then(completeAndNextTask)
+          .then(completeAndNextTask)
+          .then(last_task => {
+            const tasks = Task.objects.filter({ activity })
+
+            const tomorrows_dom = df.getDate(tomorrow)
+            const todays_dom = df.getDate(today)
+
+            // Make sure all the tasks are on the same day (tomorrow's day of month)
+            tasks
+              .slice(0, 3)
+              .map(t => t.due)
+              .map(df.getDate)
+              .forEach(d => expect(d).to.equal(todays_dom))
+
+            // We've now exceded the per_day, so the next task should be next_day
+            expect(df.getDate(last_task.due)).to.equal(tomorrows_dom)
+            done()
+          })
       })
-
-      const tomorrows_dom = df.getDate(tomorrow)
-      const todays_dom = df.getDate(today)
-
-      // Make sure all the tasks are on the same day (tomorrow's day of month)
-      tasks
-        .slice(0, 3)
-        .map(t => t.due)
-        .map(df.getDate)
-        .forEach(d => expect(d).to.equal(todays_dom))
-
-      // We've now exceded the per_day, so the next task should be next_day
-      expect(df.getDate(tasks[3].due)).to.equal(tomorrows_dom)
     })
   })
 
-  it('Incomplete previous days tasks count for today if completed today', () => {
-    const activity = newActivity({ per_day: 2 })
+  it('Incomplete previous days tasks count for today if completed today', async () => {
+    const activity = await newActivity({ per_day: 2 })
     const today = new Date()
     const yesterday = df.addDays(today, -1)
 
-    const yesterdays_completed_task = activity.makeNextTask()
+    const yesterdays_completed_task = await activity.makeNextTask()
     Object.assign(yesterdays_completed_task, {
       completed: yesterday,
       due: yesterday,
     })
-    const yesterdays_incomplete_task = activity.makeNextTask()
+    const yesterdays_incomplete_task = await activity.makeNextTask()
     yesterdays_incomplete_task.due = yesterday
     yesterdays_incomplete_task.complete()
-    const todays_second_task = activity.makeNextTask()
+    const todays_second_task = await activity.makeNextTask()
     todays_second_task.complete()
 
-    const tomorrows_task = activity.makeNextTask()
+    const tomorrows_task = await activity.makeNextTask()
     const due_days = [
       yesterdays_completed_task,
       yesterdays_incomplete_task,
