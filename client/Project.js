@@ -4,6 +4,13 @@ import { sortBy } from 'lodash'
 
 const { APIManager, Model } = uR.db
 
+const Logger = () => {
+  const func = key => {
+    func[key] = (func[key] || 0) + 1
+  }
+  return func
+}
+
 export default class Project extends Model {
   static slug = 'server.Project'
   static fields = {
@@ -32,8 +39,8 @@ export default class Project extends Model {
   __str__() {
     return this.name
   }
-  getSubtitles() {
-    const now = new Date()
+  getSubtitles(opts = {}) {
+    const now = opts.date ? new Date(opts.date) : new Date()
     const today = startOfDay(now)
     const tomorrow = endOfDay(today)
     const project_tasks = uR.db.server.Task.objects
@@ -54,32 +61,65 @@ export default class Project extends Model {
     const overdue = project_tasks.filter(
       t => !t.completed && t.due && isBefore(t.due, now),
     )
-    const out = [
+    const count = Logger()
+    completed_today
+      .map(task => {
+        if (task.activity) {
+          return task.activity.icon || task.activity.alignment
+        }
+        return 'neutral'
+      })
+      .forEach(count)
+    let out = [
       {
-        icon: 'check-square-o mr-2',
+        icon: 'smile-o',
         className: 'chip bg-success',
-        text: completed_today.length,
+        text: count.good,
         title: 'Completed Today',
       },
       {
-        icon: 'calendar mr-2',
+        icon: 'check',
+        className: 'chip bg-success',
+        text: count.neutral,
+        title: 'Completed Today',
+      },
+      {
+        icon: 'smoking',
+        className: 'chip bg-error',
+        text: count.smoking,
+        title: 'Smoking',
+      },
+      {
+        icon: 'smile-o',
+        className: 'chip bg-error',
+        text: count.evil,
+        title: 'Vices Completed Today',
+      },
+      {
+        icon: 'calendar',
         className: 'chip',
         text: incomplete.length,
         title: 'Later Today',
       },
       {
-        icon: 'hourglass mr-2',
-        className: 'chip bg-error',
+        icon: 'hourglass',
+        className: 'chip bg-warning',
         text: overdue.length,
         title: 'Overdue',
       },
       {
-        icon: 'spinner fa-spin mr-2',
+        icon: 'spinner fa-spin',
         text: running.length,
         title: 'Running',
       },
     ]
-    return out.filter(sub => sub.text)
+    out = out.filter(sub => sub.text)
+    out.forEach(sub => {
+      if (sub.text === 1) {
+        delete sub.text
+      }
+    })
+    return out
   }
 
   getTasks(opts = {}) {
