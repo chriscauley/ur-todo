@@ -65,6 +65,14 @@ export default class Task extends Model {
     return uR.css.icon(icon)
   }
 
+  getCompletedToday() {
+    if (!this.activity) {
+      return
+    }
+    const tasks = this.activity.getTasks({ completed: new Date() })
+    return tasks
+  }
+
   getSubtitles() {
     const now = new Date()
     const out = []
@@ -92,6 +100,13 @@ export default class Task extends Model {
       out.push(`Due: ${relativeTimeDiff(this.seconds_to_next)}`)
     } else {
       out.push('incomplete')
+    }
+    const completed_today = this.getCompletedToday().length
+    if (completed_today) {
+      out.push({
+        className: 'chip',
+        text: 'C ' + completed_today,
+      })
     }
     return out.map(element.text2obj)
   }

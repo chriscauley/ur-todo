@@ -48,6 +48,24 @@ export default class Activity extends Model {
     super(opts)
     // uR.db.ready.then(this.makeNextTask, () => riot.update())
   }
+
+  getTasks(opts = {}) {
+    let tasks = uR.db.server.Task.objects
+      .filter({ activity: this })
+      .filter(t => (opts.deleted ? t.deleted : !t.deleted))
+    const date_fields = ['due', 'completed']
+    date_fields
+      .filter(f => opts[f])
+      .forEach(field => {
+        tasks = tasks.filter(
+          t =>
+            df.isBefore(df.startOfDay(opts[field]), t[field]) &&
+            df.isBefore(t[field], df.endOfDay(opts[field])),
+        )
+      })
+    return tasks
+  }
+
   getNextTime(now = new Date()) {
     // #! TODO GitHub Issue: #1 (remove now as an argument and just use actual now)
     // get the due time this.interval days in the future
