@@ -3,13 +3,16 @@ import _ from 'lodash'
 import uR from 'unrest.io'
 //import riot from 'riot'
 
-const { Model, Int, APIManager, Time, ForeignKey, List } = uR.db
+import { ICON_CHOICES } from './icon'
+const { Model, Int, APIManager, Time, ForeignKey, List, String } = uR.db
 const daysSince = df.differenceInCalendarDays
 
 const DELAY_CHOICES = _.concat(
   [0, 1, 5, 10, 15, 30].map(i => [i, `${i} mins`]),
-  [60, 90, 120, 150, 180, 240, 300, 360].map(i => [i, `${i / 60} hrs`]),
+  _.range(1, 13).map(i => [i * 60, `${i} hrs`]),
 )
+
+const ALIGNMENT_CHOICES = ['good', 'netral', 'evil']
 
 export default class Activity extends Model {
   static slug = 'server.Activity'
@@ -23,6 +26,8 @@ export default class Activity extends Model {
     repeat_delay: Int(5, { choices: DELAY_CHOICES }),
     project: ForeignKey('server.Project'),
     measurements: List('', { choices: ['count', 'weight'] }),
+    alignment: String('neutral', { choices: ALIGNMENT_CHOICES }),
+    icon: String('', { required: false, choices: ICON_CHOICES }),
   }
   static editable_fieldnames = [
     'name',
@@ -32,6 +37,8 @@ export default class Activity extends Model {
     'repeat_delay',
     'project',
     'measurements',
+    'alignment',
+    'icon',
   ]
   __str__() {
     return this.name
