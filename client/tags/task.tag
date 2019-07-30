@@ -8,7 +8,9 @@ import { pick } from 'lodash'
     </div>
     <div class="tile-content">
       <div class="tile-title">
-        <span if={task.activity} class="chip">A</span>
+        <span if={task.activity} class="chip">
+          <i class="{icon(task.activity.icon||'question')}" />
+        </span>
         {task.name}
       </div>
       <div class="tile-subtitle text-gray">
@@ -48,6 +50,7 @@ import { pick } from 'lodash'
     <ur-form object={task} editable_fieldnames={fields} submit={saveRunning} autosubmit={true}></ur-form>
   </div>
 <script>
+this.mixin(uR.css.Mixin)
 const { Task, Activity } = uR.db.server
 this.task = opts.object
 this.closeMenu = () => {
