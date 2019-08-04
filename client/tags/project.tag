@@ -60,7 +60,7 @@ getFilteredTasks() {
 this.on("update",() => {
   this._past = this.mode === "_past"
   this._deleted = this.mode === "_deleted"
-  this.tasks = this.getFilteredTasks()
+  this.tasks = this.getFilteredTasks().slice(0,30) // #! TODO paginate
   this.todo = this.tasks.filter(t => !t.completed)
   this.done = this.tasks.filter(t => t.completed)
 })

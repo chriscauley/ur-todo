@@ -18,6 +18,5 @@ uR.router.add({
 <script>
   this.mixin(uR.css.ThemeMixin)
 
-console.log(this.theme)
 </script>
 </todo-credits>
