@@ -1,5 +1,6 @@
 import uR from 'unrest.io'
 import { pick } from 'lodash'
+import { addDays, isPast } from 'date-fns'
 
 <task-tile>
   <div class="tile tile-centered">
@@ -44,6 +45,12 @@ import { pick } from 'lodash'
       <li class="menu-item" if={task.activity}>
         <a href="/app/server.Activity/{task.activity.id}/edit/">Edit Activity</a>
       </li>
+      <li class="menu-item" if={task.started}>
+        <a onclick={stop}>Stop</a>
+      </li>
+      <li class="menu-item" if={!task.started}>
+        <a onclick={bump}>Bump 1 day</a>
+      </li>
     </ul>
   </div>
   <div if={fields && fields.length} class="flex-full">
@@ -67,6 +74,21 @@ toggleActions(e) {
   }
   this.parent.update()
   e.stopPropagation()
+}
+stop(e) {
+  const { task } = e.item
+  task.started = undefined
+  Task.objects.create(task).then( ()=> this.update())
+}
+bump(e) {
+  const { task } = e.item
+  if (!task.due) {
+    task.due = new Date()
+  }
+  while (isPast(task.due)) {
+    task.due = addDays(task.due, 1)
+  }
+  Task.objects.create(task).then( ()=> this.update())
 }
 copy() {
   Task.objects.create(
