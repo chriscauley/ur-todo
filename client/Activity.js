@@ -28,6 +28,7 @@ export default class Activity extends Model {
     measurements: List('', { choices: ['count', 'weight'] }),
     alignment: String('neutral', { choices: ALIGNMENT_CHOICES }),
     icon: String('', { required: false, choices: ICON_CHOICES }),
+    checklist_items: String(''),
   }
   static editable_fieldnames = [
     'name',
@@ -36,9 +37,10 @@ export default class Activity extends Model {
     'start_time',
     'repeat_delay',
     'project',
-    'measurements',
     'alignment',
     'icon',
+    'measurements',
+    'checklist_items',
   ]
   __str__() {
     return this.name
@@ -56,13 +58,10 @@ export default class Activity extends Model {
     const date_fields = ['due', 'completed']
     date_fields
       .filter(f => opts[f])
-      .forEach(field => {
-        tasks = tasks.filter(
-          t =>
-            df.isBefore(df.startOfDay(opts[field]), t[field]) &&
-            df.isBefore(t[field], df.endOfDay(opts[field])),
-        )
-      })
+      .forEach(
+        field =>
+          (tasks = tasks.filter(t => df.isSameDay(opts[field], t[field]))),
+      )
     return tasks
   }
 

@@ -2,7 +2,7 @@ import uR from 'unrest.io'
 import element from '@unrest/element'
 
 import Project from './Project'
-import { differenceInSeconds } from 'date-fns'
+import { differenceInSeconds, addDays } from 'date-fns'
 
 const UNIT_CONVERSION = [
   [180, 1, 's'],
@@ -30,7 +30,7 @@ const relativeTimeDiff = seconds => {
   return seconds > 0 ? `in ${sd}` : `${sd} ago`
 }
 
-const { Model, APIManager, ForeignKey, DateTime, Int } = uR.db
+const { Model, APIManager, ForeignKey, DateTime, Int, String, List } = uR.db
 
 export default class Task extends Model {
   static slug = 'server.Task'
@@ -45,6 +45,7 @@ export default class Task extends Model {
     activity: ForeignKey('server.Activity', { required: false }),
     count: Int(0, { required: false }),
     weight: Int(0, { required: false }),
+    checklist: List('', { choices: [], required: false }),
   }
   static manager = APIManager
   static editable_fieldnames = ['name', 'due']
@@ -67,9 +68,17 @@ export default class Task extends Model {
 
   getCompletedToday() {
     if (!this.activity) {
-      return
+      return []
     }
     const tasks = this.activity.getTasks({ completed: new Date() })
+    return tasks
+  }
+
+  getCompletedYesterday() {
+    if (!this.activity) {
+      return []
+    }
+    const tasks = this.activity.getTasks({ completed: addDays(new Date(), -1) })
     return tasks
   }
 
@@ -105,7 +114,14 @@ export default class Task extends Model {
     if (completed_today) {
       out.push({
         className: 'chip',
-        text: 'C ' + completed_today,
+        text: 'T ' + completed_today,
+      })
+    }
+    const completed_yesterday = this.getCompletedYesterday().length
+    if (completed_yesterday) {
+      out.push({
+        className: 'chip',
+        text: 'Y ' + completed_yesterday,
       })
     }
     return out.map(element.text2obj)
@@ -138,9 +154,28 @@ export default class Task extends Model {
     }
     return super.getFieldnames()
   }
+
+  getFields() {
+    const out = new Map(super.getFields())
+    if (out.get('checklist')) {
+      out.set(
+        'checklist',
+        List(String, {
+          choices: this.activity.checklist_items.split(','),
+          required: false,
+        }),
+      )
+    }
+    return out
+  }
+
   getExtraFields() {
     if (this.activity) {
-      return this.activity.measurements
+      const out = this.activity.measurements || []
+      if (this.activity.checklist_items) {
+        out.push('checklist')
+      }
+      return out
     }
     return []
   }
