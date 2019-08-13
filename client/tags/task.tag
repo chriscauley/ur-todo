@@ -157,7 +157,7 @@ createActivity(e) {
   ).then(() => this.parent.update())
 }
 saveRunning(form) {
-  const data = form.getData()
+  const data = pick(form.getData(), this.fields)
   Object.assign(this.task, data)
   return this.task.constructor.objects.create(this.task)
 }

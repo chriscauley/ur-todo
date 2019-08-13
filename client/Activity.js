@@ -5,14 +5,13 @@ import uR from 'unrest.io'
 
 import { ICON_CHOICES } from './icon'
 const { Model, Int, APIManager, Time, ForeignKey, List, String } = uR.db
-const daysSince = df.differenceInCalendarDays
 
 const DELAY_CHOICES = _.concat(
   [0, 1, 5, 10, 15, 30].map(i => [i, `${i} mins`]),
   _.range(1, 13).map(i => [i * 60, `${i} hrs`]),
 )
 
-const ALIGNMENT_CHOICES = ['good', 'netral', 'evil']
+const ALIGNMENT_CHOICES = ['good', 'neutral', 'evil']
 
 export default class Activity extends Model {
   static slug = 'server.Activity'
@@ -105,9 +104,7 @@ export default class Activity extends Model {
     // #! TODO GitHub Issue: #1
     const now = Math.max(last_task.completed, new Date())
 
-    const todays_tasks = tasks.filter(
-      t => t === last_task || !daysSince(t.completed, now),
-    )
+    const todays_tasks = tasks.filter(t => df.isToday(t.completed))
     if (this.per_day > todays_tasks.length) {
       // haven't completed this.per_day tasks today. Make the next one today
       kwargs.due = df.addMinutes(last_task.completed, this.repeat_delay)
