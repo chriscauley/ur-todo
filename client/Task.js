@@ -157,7 +157,7 @@ export default class Task extends Model {
 
   getFields() {
     const out = new Map(super.getFields())
-    if (out.get('checklist')) {
+    if (this.activity && out.get('checklist')) {
       out.set(
         'checklist',
         List(String, {
@@ -170,14 +170,17 @@ export default class Task extends Model {
   }
 
   getExtraFields() {
-    if (this.activity) {
-      const out = this.activity.measurements || []
-      if (this.activity.checklist_items) {
-        out.push('checklist')
-      }
-      return out
+    if (!this.activity) {
+      return []
     }
-    return []
+    const out = this.activity.measurements || []
+    if (this.activity.checklist_items) {
+      out.push('checklist')
+    }
+    if (this.activity.lap_items) {
+      out.push('lap')
+    }
+    return out
   }
   getRunningFields() {
     if (!this.started || this.completed) {

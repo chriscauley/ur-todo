@@ -115,4 +115,18 @@ export default class Activity extends Model {
 
     return uR.db.server.Task.objects.create(kwargs)
   }
+
+  serialize(opts) {
+    // #! TODO this should be built into an taglist input
+    const slugList = value =>
+      value &&
+      value
+        .toLowerCase()
+        .replace(/\s*,[,\s]*/g, ',') // remove dupliate commas and white-space
+        .replace(/(^,+|,+$)/, '') // remove commas at start/end
+    const value = super.serialize(opts)
+    value.checklist_items = slugList(value.checklist_items)
+    value.lap_items = slugList(value.lap_items)
+    return value
+  }
 }
