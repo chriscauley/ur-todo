@@ -22,10 +22,10 @@ import { addDays, isPast } from 'date-fns'
       </div>
     </div>
     <div if={task.deleted} class="tile-action" onclick={restore}>
-      <i class={uR.css.icon('recycle pointer')} />
+      <i class={css.icon('recycle pointer')} />
     </div>
     <div if={!task.deleted} class="tile-action" onclick={toggleActions}>
-      <i class={uR.css.icon('ellipsis-v pointer')} />
+      <i class={css.icon('ellipsis-v pointer')} />
     </div>
     <ul class="menu {'d-none': parent.openTask !== task}">
       <li class="menu-item">

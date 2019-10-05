@@ -8,12 +8,13 @@ import uR from "unrest.io"
     </div>
     <ul class="menu {'d-none': !open}">
       <li class="menu-item">
-        <a href={uR.auth.urls.logout}>Logout</a>
+        <a href={logout_url}>Logout</a>
       </li>
     </ul>
   </header>
   <script>
 this.open = false
+this.logout_url = uR.auth.urls.logout
 this.toggle = mode => () => {
   this[mode] = !this[mode]
 }
