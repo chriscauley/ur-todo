@@ -11,7 +11,7 @@ const UNIT_CONVERSION = [
   [1, 3600 * 24, 'd'],
 ]
 
-const shortTimeDiff = seconds => {
+export const shortTimeDiff = seconds => {
   seconds = Math.abs(seconds)
   let count, unit
   UNIT_CONVERSION.find(([max, mod, _unit], _i) => {
@@ -46,6 +46,7 @@ export default class Task extends Model {
     count: Int(0, { required: false }),
     weight: Int(0, { required: false }),
     checklist: List('', { choices: [], required: false }),
+    laps: List(undefined, { required: false }),
   }
   static manager = APIManager
   static editable_fieldnames = ['name', 'due']
@@ -138,6 +139,11 @@ export default class Task extends Model {
       this.complete()
     } else if (!this.started) {
       this.started = new Date().valueOf()
+      if (this.activity && this.activity.lap_items.length) {
+        this.laps = [
+          [this.activity.lap_items.split(',')[0], new Date().valueOf()],
+        ]
+      }
     }
     return this.constructor.objects.create(this)
   }
@@ -157,15 +163,23 @@ export default class Task extends Model {
 
   getFields() {
     const out = new Map(super.getFields())
-    if (this.activity && out.get('checklist')) {
-      out.set(
-        'checklist',
-        List(String, {
-          choices: this.activity.checklist_items.split(','),
-          required: false,
-        }),
-      )
+    if (!this.activity) {
+      return out
     }
+    out.set(
+      'checklist',
+      List(String, {
+        choices: this.activity.checklist_items.split(','),
+        required: false,
+      }),
+    )
+    out.set(
+      'laps',
+      List(String, {
+        choices: this.activity.lap_items.split(','),
+        required: false,
+      }),
+    )
     return out
   }
 
@@ -173,12 +187,12 @@ export default class Task extends Model {
     if (!this.activity) {
       return []
     }
-    const out = this.activity.measurements || []
+    const out = [...this.activity.measurements]
     if (this.activity.checklist_items) {
       out.push('checklist')
     }
     if (this.activity.lap_items) {
-      out.push('lap')
+      out.push('laps')
     }
     return out
   }

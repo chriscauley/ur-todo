@@ -28,6 +28,7 @@ export default class Activity extends Model {
     alignment: String('neutral', { choices: ALIGNMENT_CHOICES }),
     icon: String('', { required: false, choices: ICON_CHOICES }),
     checklist_items: String(''),
+    lap_items: String(''),
   }
   static editable_fieldnames = [
     'name',
@@ -40,6 +41,7 @@ export default class Activity extends Model {
     'icon',
     'measurements',
     'checklist_items',
+    'lap_items',
   ]
   __str__() {
     return this.name

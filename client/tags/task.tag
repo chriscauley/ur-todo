@@ -78,6 +78,7 @@ toggleActions(e) {
 stop(e) {
   const { task } = e.item
   task.started = undefined
+  task.laps = [] // #! TODO move to tag cancel method?
   Task.objects.create(task).then( ()=> this.update())
 }
 bump(e) {
