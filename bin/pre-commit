@@ -9,18 +9,19 @@ if [ "$FORCE_COMMIT" ]; then
 fi
 
 if [[ ! -z "$PY_FILES" ]]; then
-    PASS=true
     . .venv/bin/activate
+    FAILS=()
     for FILE in $PY_FILES
     do
-        # TODO
-        # yapf "$FILE" -i -d
+        yapf -d "$FILE"
         if [[ "$?" -ne "0" ]]; then
-            PASS=false
+            FAILS+=($FILE)
         fi
     done
-    if ! $PASS; then
+    if [ -n "$FAILS" ]; then
         printf "\\033[41mCOMMIT FAILED:\\033[0m Your commit contains files that did not pass yapf and flake8. PLease fix the errors and try again.\\n"
+        printf "The following command will attempt to autoformat\\n"
+        printf "yapf -i $FAILS\\n"
         exit 1
     else
         a=("$PY_FILES")
