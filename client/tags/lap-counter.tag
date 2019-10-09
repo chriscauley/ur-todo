@@ -21,8 +21,10 @@ uR.form.config.name2class.laps = LapCounter
     <button type="button" each={choice,i in choices} onclick={click} class={css.btn.default}>
       {choice}
     </button>
-    <div each={item,i in items}>
-      { item.name } { item.dt }
+    <div class="card" if={items && items.length}>
+      <div each={item,i in items}>
+        { item.name } { item.dt }
+      </div>
     </div>
   </div>
 <script>
@@ -30,13 +32,12 @@ this.mixin("ThemeMixin")
 this.on("mount", () => this.update())
 this.on("before-mount", () => {
   this.opts.input.bindTag(this)
-  this.choices = this.opts.input.choices
 })
 const getItems = array => {
-  if (!array || !array.length) {
-    return
-  }
   return array.map(([name, time],index) => {
+    if (name === "completed") {
+      return {}
+    }
     const next_time = array[index+1]? array[index+1][1] : new Date().valueOf()
     return {
       name,
@@ -45,8 +46,13 @@ const getItems = array => {
   })
 }
 this.on("update", () => {
-  const {value} = this.input
-  this.items = getItems(this.input.value)
+  const value = this.input.value || []
+  this.items = getItems(value)
+
+  this.choices = this.opts.input.choices
+  if (value.find(v => v[0] === 'completed')) {
+    this.choices = []
+  }
 })
 click(e) {
   this.input.value.push([e.item.choice, new Date().valueOf()])

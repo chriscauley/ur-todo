@@ -133,13 +133,17 @@ export default class Task extends Model {
     return !this.completed || new Date() - new Date(this.completed) < 3e5
   }
 
+  _hasLaps() {
+    return this.activity && this.activity.lap_items.length
+  }
+
   click() {
     // moves task from stopped to started to complete
     if (this.started && !this.completed) {
       this.complete()
     } else if (!this.started) {
       this.started = new Date().valueOf()
-      if (this.activity && this.activity.lap_items.length) {
+      if (this._hasLaps()) {
         this.laps = [
           [this.activity.lap_items.split(',')[0], new Date().valueOf()],
         ]
@@ -150,6 +154,9 @@ export default class Task extends Model {
 
   complete() {
     this.completed = new Date().valueOf()
+    if (this._hasLaps()) {
+      this.laps.push(['completed', this.completed])
+    }
   }
   getFieldnames() {
     if (this.completed) {
