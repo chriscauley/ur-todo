@@ -1,7 +1,6 @@
 import df from 'date-fns'
 import _ from 'lodash'
 import uR from 'unrest.io'
-//import riot from 'riot'
 
 import { ICON_CHOICES } from './icon'
 const { Model, Int, APIManager, Time, ForeignKey, List, String } = uR.db
@@ -89,7 +88,7 @@ export default class Activity extends Model {
       return incomplete_task
     }
 
-    const last_task = tasks[tasks.length - 1]
+    const last_task = _.maxBy(tasks, 'started')
     const kwargs = {
       activity: this,
       name: this.name,
@@ -107,7 +106,9 @@ export default class Activity extends Model {
     const now = Math.max(last_task.completed, new Date())
 
     const todays_tasks = tasks.filter(t => df.isToday(t.completed))
-    if (this.per_day > todays_tasks.length) {
+    if (last_task && !last_task.due) {
+      kwargs.due = null
+    } else if (this.per_day > todays_tasks.length) {
       // haven't completed this.per_day tasks today. Make the next one today
       kwargs.due = df.addMinutes(last_task.completed, this.repeat_delay)
     } else {
