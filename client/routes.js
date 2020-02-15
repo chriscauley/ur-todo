@@ -7,6 +7,7 @@ uR.router.add({
   '#!/form/([^/]*)/(\\d+)/': changeView,
   '#/project/(overdue|\\d+)/': uR.router.routeElement('todo-project'),
   '/app/([\\.\\w]+)/(\\d+)/edit/$': uR.router.routeElement('ur-form'),
+  '/app/scorecard/': uR.router.routeElement('scorecard'),
 })
 
 uR.router.default_route = uR.auth.loginRequired(

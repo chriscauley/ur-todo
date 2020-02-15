@@ -5,12 +5,12 @@ from .models import Task, Project, Activity
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-  pass
+  search_fields = ('data', )
 
 
 @admin.register(Activity)
 class ActivityAdmin(admin.ModelAdmin):
-  pass
+  search_fields = ('data', )
 
 
 @admin.register(Project)

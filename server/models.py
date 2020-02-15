@@ -20,3 +20,10 @@ class Activity(UserModel):
 
   def __str__(self):
     return "{} - {}".format(self.data["name"], self.user)
+
+
+class ScoreCard(UserModel):
+  json_fields = ["id", "data"]
+
+  def __str__(self):
+    return "ScoreCard {} - {}".format(self.data["datetime"], self.user)

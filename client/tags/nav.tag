@@ -8,6 +8,10 @@ import uR from "unrest.io"
     </div>
     <ul class="menu {'d-none': !open}">
       <li class="menu-item">
+        <a href="/app/scorecard/">Scorecard</a>
+      </li>
+      <li class="divider"></li>
+      <li class="menu-item">
         <a href={logout_url}>Logout</a>
       </li>
     </ul>
