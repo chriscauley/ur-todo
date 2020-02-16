@@ -10,6 +10,9 @@ import uR from "unrest.io"
       <li class="menu-item">
         <a href="/app/scorecard/">Scorecard</a>
       </li>
+      <li class="menu-item">
+        <a href="/app/activities/">Activities</a>
+      </li>
       <li class="divider"></li>
       <li class="menu-item">
         <a href={logout_url}>Logout</a>

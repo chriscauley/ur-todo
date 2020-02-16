@@ -43,7 +43,7 @@ import { addDays, isPast } from 'date-fns'
         <a onclick={createActivity}>Create Activity</a>
       </li>
       <li class="menu-item" if={task.activity}>
-        <a href="/app/server.Activity/{task.activity.id}/edit/">Edit Activity</a>
+        <a href={task.activity.edit_link}>Edit Activity</a>
       </li>
       <li class="menu-item" if={task.started}>
         <a onclick={stop}>Stop</a>

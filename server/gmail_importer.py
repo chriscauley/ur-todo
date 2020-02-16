@@ -25,7 +25,7 @@ def get_or_create_activity(user):
   for activity in Activity.objects.filter(user=user):
     if activity.data['name'] == 'Spinning':
       return activity
-  return Activity.objects.create(user=user, data={'name': 'Spinning'})
+  return Activity.objects.create(user=user, data={'name': 'Spinning', 'project': project.id})
 
 
 def process_all():

@@ -42,6 +42,7 @@ export default class Activity extends Model {
     'checklist_items',
     'lap_items',
   ]
+  edit_link = `/app/server.Activity/${this.id}/edit/`
   __str__() {
     return this.name
   }
