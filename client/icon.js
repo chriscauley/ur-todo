@@ -3,15 +3,17 @@ import uR from 'unrest.io'
 export const ICON_CHOICES = (uR.ICON_CHOICES = [
   'beer',
   'beers',
-  'cat-food',
-  'cat-feeder',
   'cat-brush',
+  'cat-feeder',
+  'cat-food',
+  'cat-litter',
   'cigarettes',
   'cleaning',
   'dental-floss',
   'drop',
   'dryer',
   'flowers',
+  'gym',
   'hop',
   'lifeline-in-a-heart-outline',
   'meditation',
@@ -27,9 +29,11 @@ export const ICON_CHOICES = (uR.ICON_CHOICES = [
   'warrior',
   'washing-machine',
   'washing-plate',
+  'weight',
+  'weights',
 ])
 
-const SVGS = ['warrior', 'meditation']
+const SVGS = ['warrior', 'meditation', 'cat-litter', 'gym']
 
 const styles = [
   `.fi { background: center no-repeat; background-size: 100% auto; display: inline-block; }`,
