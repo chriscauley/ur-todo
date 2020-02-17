@@ -7,10 +7,11 @@ from imbox import Imbox
 
 from server.models import Activity, Project, Task, ImportedEmail
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 TMP_DIR = "./tmp"
-user = "leverphilly@gmail.com"
-password = "Monkey6578"
+user = getattr(settings, 'GMAIL_USERNAME', '')
+password = getattr(settings, 'GMAIL_PASSWORD', '')
 
 
 def get_or_create_project(user):
