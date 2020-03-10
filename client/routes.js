@@ -7,6 +7,7 @@ uR.router.add({
   '#!/form/([^/]*)/(\\d+)/': changeView,
   '#/project/(overdue|\\d+)/': uR.router.routeElement('todo-project'),
   '/app/activities/': uR.router.routeElement('todo-activities'),
+  '/app/spinning/': uR.router.routeElement('todo-spinning'),
   '/app/([\\.\\w]+)/(\\d+)/edit/$': uR.router.routeElement('ur-form'),
   '/app/scorecard/': uR.router.routeElement('scorecard'),
 })
