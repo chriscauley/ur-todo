@@ -15,6 +15,11 @@ import uR from "unrest.io"
       </li>
       <li class="divider"></li>
       <li class="menu-item">
+        <a href="">
+          Account
+        </a>
+      </li>
+      <li class="menu-item">
         <a href={logout_url}>Logout</a>
       </li>
     </ul>
