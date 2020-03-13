@@ -68,12 +68,21 @@ def download():
       google_id = google_id.decode()
       if google_id in google_ids:
         continue
+      if message.body['plain']:
+        ImportedEmail.objects.create(
+          subject=message.subject,
+          content=message.body['plain'][0],
+          google_id=google_id,
+          attachment_number=0,
+          source_email=user,
+          from_email=message.sent_to[0]['email'],
+        )
       for num, content in enumerate(message.body['html']):
         ImportedEmail.objects.create(
           subject=message.subject,
           content=content,
           google_id=google_id,
-          attachment_number=num,
+          attachment_number=num + 1,
           source_email=user,
           from_email=message.sent_from[0]['email'],
         )

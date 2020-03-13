@@ -21,4 +21,4 @@ class ProjectAdmin(admin.ModelAdmin):
 @admin.register(ImportedEmail)
 class ImportedEmailAdmin(admin.ModelAdmin):
   list_display = ['google_id', 'attachment_number', 'from_email', 'subject', 'status']
-  list_editable = ['from_email']
+  list_editable = ['from_email', 'attachment_number']
