@@ -1,6 +1,8 @@
 import uR from 'unrest.io'
 import { sortBy } from 'lodash'
 import { format } from 'date-fns'
+import lsq from 'least-squares'
+import correlation from 'correlation-rank'
 
 const { List, Boolean } = uR.db.fields
 
@@ -13,6 +15,15 @@ const normalize = (numbers, offset=0) => {
 <todo-spinning>
   <div><canvas id="myChart" width="300" height="300"></canvas></div>
   <ur-form schema={schema} autosubmit={true} submit={submit} initial={formData} />
+  <table class="table">
+    <tr>
+      <th></th>
+      <th each={header in data_attrs}>{ header }</th>
+    </tr>
+    <tr each={row in correlations}>
+      <td each={col in row}>{ col }</td>
+    </tr>
+  </table>
   <table class="table">
     <tr>
       <th each={header in headers}>{ header }</th>
@@ -38,15 +49,16 @@ const normalize = (numbers, offset=0) => {
     return new Promise(()=>{})
   }
   this.attrs = ['completed', 'minutes', 'points', 'ave_rpm', 'ave_mph', 'ave_watts', 'calories', 'distance']
+  this.data_attrs = this.attrs.slice(2)
   this.formData = {
     x_attr: 'ave_watts',
-    y_attrs: this.attrs.slice(2),
+    y_attrs: this.data_attrs,
     normalize_data: false,
   }
   const x_choices = this.attrs.filter(a => a !== 'minutes')
   this.schema = {
     x_attr: {choices: x_choices},
-    y_attrs: List([], {choices: x_choices.filter(a => a !== 'completed')}),
+    y_attrs: List([], {choices: this.data_attrs}),
     normalize_data: Boolean(),
   }
   this.headers = ['date', 'min', 'points', 'rpm', 'mph', 'watts',  'kcal', 'mi']
@@ -99,10 +111,10 @@ const normalize = (numbers, offset=0) => {
         y: y_data[i],
       }))
       if (data[0].x !== 0) {
-        const regression = findLineByLeastSquares(x_data, y_data)
+        const fx = lsq(x_data, y_data)
         data.unshift({
-          x: regression.x0,
-          y: regression.y0,
+          x: 0,
+          y: fx(0),
         })
       }
       return {
@@ -118,45 +130,13 @@ const normalize = (numbers, offset=0) => {
       data: { datasets },
       options: {
         animation: { duration: 0 },
-        scales: {
-          xAxes: [{
-            type: 'linear',
-            position: 'bottom'
-          }]
-        }
       }
     })
   })
-</todo-spinning>
 
-function findLineByLeastSquares(xs, ys) {
-  let sum_x = 0;
-  let sum_y = 0;
-  let sum_xy = 0;
-  let sum_xx = 0;
-  const count = xs.length
-
-  if (count !== ys.length) {
-    throw new Error('The parameters values_x and values_y need to have same size!');
-  }
-
-  xs.forEach((x, i) => {
-    const y = ys[i]
-    sum_x += x;
-    sum_y += y;
-    sum_xx += x*x;
-    sum_xy += x*y;
+  this.correlations = this.data_attrs.map( attr1 => {
+    const row = this.data_attrs.map(attr2 => correlation.rank(cols[attr1], cols[attr2]).toFixed(2))
+    row.unshift(attr1)
+    return row
   })
-
-  const m = (count*sum_xy - sum_x*sum_y) / (count*sum_xx - sum_x*sum_x);
-  const b = (sum_y/count) - (m*sum_x)/count;
-
-  return {
-    x0: 0,
-    y0: b,
-    m,
-    b,
-    xs,
-    ys: xs.map(x => x * m + b)
-  }
-}
+</todo-spinning>
