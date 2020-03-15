@@ -18,10 +18,11 @@ const normalize = (numbers, offset=0) => {
   <table class="table">
     <tr>
       <th></th>
-      <th each={header in data_attrs}>{ header }</th>
+      <th each={attr in data_attrs}>{ headers_map[attr] }</th>
     </tr>
     <tr each={row in correlations}>
-      <td each={col in row}>{ col }</td>
+      <th>{row[0]}</th>
+      <td each={col in row.slice(1)}>{ col }</td>
     </tr>
   </table>
   <table class="table">
@@ -136,7 +137,7 @@ const normalize = (numbers, offset=0) => {
 
   this.correlations = this.data_attrs.map( attr1 => {
     const row = this.data_attrs.map(attr2 => correlation.rank(cols[attr1], cols[attr2]).toFixed(2))
-    row.unshift(attr1)
+    row.unshift(this.headers_map[attr1])
     return row
   })
 </todo-spinning>
