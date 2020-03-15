@@ -2,8 +2,17 @@ import uR from 'unrest.io'
 import { sortBy } from 'lodash'
 import { format } from 'date-fns'
 
+const { List, Boolean } = uR.db.fields
+
+const normalize = (numbers, offset=0) => {
+  const min = Math.min(...numbers)
+  const max = Math.max(...numbers)
+  return numbers.map(n => Math.round(100*n/max)-offset)
+}
+
 <todo-spinning>
-  <img src="https://chart.googleapis.com/chart?cht=lc&chs=500x300&chd=t:{chart_data}&chdl={chl}&chco={chco}" style="max-width: 100%" />
+  <div><canvas id="myChart" width="300" height="300"></canvas></div>
+  <ur-form schema={schema} autosubmit={true} submit={submit} initial={formData} />
   <table class="table">
     <tr>
       <th each={header in headers}>{ header }</th>
@@ -17,14 +26,32 @@ import { format } from 'date-fns'
       <th each={header in headers}>{ header }</th>
     </tr>
     <tr each={row in norm_rows}>
-      <td each={col in row}>{ col }</td>
+      <td each={col, i in row}>{ i === 0 ? col : Math.round(col)}</td>
     </tr>
   </table>
 <script>
   this.activity = uR.db.server.Activity.objects.all().find( a => a.name === "Spinning")
   this.tasks = sortBy(uR.db.server.Task.objects.filter({activity: this.activity}), 'due')
+  this.submit = form => {
+    this.formData = form.getData()
+    this.update()
+    return new Promise(()=>{})
+  }
   this.attrs = ['completed', 'minutes', 'points', 'ave_rpm', 'ave_mph', 'ave_watts', 'calories', 'distance']
+  this.formData = {
+    x_attr: 'ave_watts',
+    y_attrs: this.attrs.slice(2),
+    normalize_data: false,
+  }
+  const x_choices = this.attrs.filter(a => a !== 'minutes')
+  this.schema = {
+    x_attr: {choices: x_choices},
+    y_attrs: List([], {choices: x_choices.filter(a => a !== 'completed')}),
+    normalize_data: Boolean(),
+  }
   this.headers = ['date', 'min', 'points', 'rpm', 'mph', 'watts',  'kcal', 'mi']
+  this.headers_map = {}
+  this.attrs.forEach((attr, i) => this.headers_map[attr] = this.headers[i])
   const process = {
     distance: parseFloat,
     ave_mph: parseFloat,
@@ -40,24 +67,96 @@ import { format } from 'date-fns'
   this.attrs.forEach(attr => cols[attr] = [])
   this.norm_rows = this.rows.map(
     (row, ir) => row.map( (col, ic) => {
-      if (!ic) { return col }
-      const hours = this.tasks[ir].opts.minutes / 60
-      const normalize = ['minutes', 'points', 'calories', 'distance'].includes(this.attrs[ic])
-      if (this.attrs[ic] == 'minutes') {
-        console.log(ic, col, hours, this.tasks[ir].opts.minutes)
+      if (!ic) {
+        cols[this.attrs[ic]].push(ir)
+        return col
       }
-      const per_hour = normalize ? (col / hours).toFixed(2) : col
+      const hours = this.tasks[ir].opts.minutes / 60
+      const is_quantity = ['minutes', 'points', 'calories', 'distance'].includes(this.attrs[ic])
+      const per_hour = is_quantity ? col / hours : col
       cols[this.attrs[ic]].push(per_hour)
       return per_hour
     })
   )
-  const percentages = this.attrs.slice(2).map(
-    attr => console.log(cols[attr]) || cols[attr].map(
-      value => 100 * value / Math.max(...cols[attr])
-    )
-  )
-  this.chl = this.headers.slice(2).join('|')
-  this.chart_data = percentages.map(row => row.join(',')).join('|')
-  this.chco="888888,00FF00,0000FF,888888,888888,FF0000"
-</script>
+  this.on('mount', () => this.update())
+  this.on('update', () => {
+    this.chart && this.chart.destroy()
+    const nextColor = (() => {
+      let i = 0
+      const colors = ['red', 'green', 'blue', 'black', 'purple', 'gray']
+      return () => colors[i++%colors.length]
+    })()
+    const { x_attr, y_attrs, normalize_data } = this.formData
+    const x_data = cols[x_attr]
+    const datasets = y_attrs.filter(y_attr => y_attr !== x_attr).map( y_attr => {
+      const label = this.headers_map[y_attr]
+      let y_data = cols[y_attr]
+      if (normalize_data) {
+        y_data = normalize(y_data)
+      }
+      const data = x_data.map((x,i) => ({
+        x,
+        y: y_data[i],
+      }))
+      if (data[0].x !== 0) {
+        const regression = findLineByLeastSquares(x_data, y_data)
+        data.unshift({
+          x: regression.x0,
+          y: regression.y0,
+        })
+      }
+      return {
+        label,
+        data,
+        borderColor: nextColor(),
+      }
+    })
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    this.chart = new Chart(ctx, {
+      type: 'scatter',
+      data: { datasets },
+      options: {
+        animation: { duration: 0 },
+        scales: {
+          xAxes: [{
+            type: 'linear',
+            position: 'bottom'
+          }]
+        }
+      }
+    })
+  })
 </todo-spinning>
+
+function findLineByLeastSquares(xs, ys) {
+  let sum_x = 0;
+  let sum_y = 0;
+  let sum_xy = 0;
+  let sum_xx = 0;
+  const count = xs.length
+
+  if (count !== ys.length) {
+    throw new Error('The parameters values_x and values_y need to have same size!');
+  }
+
+  xs.forEach((x, i) => {
+    const y = ys[i]
+    sum_x += x;
+    sum_y += y;
+    sum_xx += x*x;
+    sum_xy += x*y;
+  })
+
+  const m = (count*sum_xy - sum_x*sum_y) / (count*sum_xx - sum_x*sum_x);
+  const b = (sum_y/count) - (m*sum_x)/count;
+
+  return {
+    x0: 0,
+    y0: b,
+    m,
+    b,
+    xs,
+    ys: xs.map(x => x * m + b)
+  }
+}
