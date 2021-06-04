@@ -1,4 +1,4 @@
-Django==2.2.6
+Django==2.2.21
 psycopg2-binary==2.7.6.1
 yapf==0.28.0
 flake8==3.7.8
